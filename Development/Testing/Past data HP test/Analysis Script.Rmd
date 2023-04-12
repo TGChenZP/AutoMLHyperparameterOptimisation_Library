@@ -1,0 +1,73 @@
+```{r}
+setwd('/Users/tg.chenny/Desktop/3. Self Projects/2. PythonProject/Incomplete/JiaXing/Past data HP test/Past Data')
+library(MASS)
+file_list = list.files()
+LABEL = c('Train.score', 'Val.score', 'Test.score', 'train.score', 'val.score', 'test.score', 'time', 'Time')
+```
+
+
+```{r}
+file = read.csv('/Users/tg.chenny/Desktop/3. Self Projects/2. PythonProject/Incomplete/JiaXing/Past data HP test/Past Data/Brown_N_cbr_3.csv')
+
+file = file[file$Train.score >= 0, ]
+
+# file['alpha'] = log10(file['alpha'])
+file['eta'] = log10(file['eta'])
+#file['learning_rate'] = log10(file['learning_rate'])
+
+feature_names = c()
+for (feature in colnames(file)){
+  if (feature != 'train.score' & feature != 'val.score' & feature != 'test.score' & feature != 'time' & feature != 'Train.score' & feature != 'Val.score' & feature != 'Test.score' & feature != 'Time'){
+    feature_names = c(feature_names, feature)
+  }
+}
+
+feature_names
+
+```
+
+
+```{r}
+# PLOTS
+for (feature in feature_names){
+  
+  for (label in LABEL){
+      if (label %in% colnames(file)){
+        
+        plot(file[c(feature, label)],  main=paste(label, feature),
+         xlab=feature, ylab=label, pch=19)
+      
+        fm <- as.formula(paste(label, "~", feature, sep=""))
+        lm_model = lm(fm, data = file)
+        abline(lm_model, col="red")
+        
+        
+        print(summary(lm_model))
+      }
+  }
+}
+
+
+```
+
+
+```{r}
+# starting from full model
+for (label in LABEL){
+      if (label %in% colnames(file)){
+        formula_char = paste(label, '~', '(', sep="")
+        for (feature in feature_names){
+          formula_char = paste(formula_char, feature, '+', sep="")
+        }
+        formula_char = paste(formula_char, '1)^', length(feature_names), sep="")
+        
+        fm <- as.formula(formula_char)
+        model = lm(fm, data = file)
+        
+        final_model = stepAIC(model, direction = "both", 
+                              trace = FALSE)
+        
+        print(summary(final_model))
+    }
+}
+```
