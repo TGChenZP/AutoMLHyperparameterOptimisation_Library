@@ -903,7 +903,6 @@ class GuangAn:
                     # decide whether to search (criteria: has it been searched before)
                     if tuple(centres[i]) in self.checked_dict:
                         self._check_already_trained_best_score(tuple(centres[i]))
-                        # actual_centre_score = self.checked_dict[tuple(centres[i])]['score'] #TODO: remove
                         
                     else:
                         centre_df = dict()
