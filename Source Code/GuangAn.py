@@ -1,4 +1,4 @@
-# 11/04/2023
+# 10/06/2023
 
 
 
@@ -734,11 +734,10 @@ class GuangAn:
                     boundaries = boundaries.append(tmp_boundary)
 
                 if len(boundaries) == 1: # if only one coordinate in this boundary (i.e. all categorical)
-                    print('ONE!\n')
                     continue
 
                 # get the components that make up the centre (as well as new categories); and then unpack them into centres
-                centre_components, new_cat = self._get_centre_components(old_bounds_list[k], self.categorical) # 加进去 - 改 for bound bounds with index
+                centre_components, new_cat = self._get_centre_components(old_bounds_list[k], self.categorical) 
                 
                 centres = self._unpack_centre(centre_components)
 
@@ -783,6 +782,8 @@ class GuangAn:
                     for j in range(len(new_cat)):
                 
                         if new_cat[self.hyperparameters[j]] == True:
+
+                            # deal with newly become categorical features
 
                             tmp_boundary = tmp_boundary[tmp_boundary[self.hyperparameters[j]] == categorical_value_list[i][n_cat]]
                             tmp_boundary_drop = tmp_boundary_drop[tmp_boundary_drop[self.hyperparameters[j]] == categorical_value_list[i][n_cat]]
@@ -884,7 +885,6 @@ class GuangAn:
                     boundaries = boundaries.append(tmp_boundary)
                 
                 if len(boundaries) == 1: # if only one coordinate in this boundary (i.e. all categorical)
-                    print('ONE!\n')
                     continue
 
                 # get the components that make up the centre (as well as new categories); and then unpack them into centres
@@ -919,34 +919,11 @@ class GuangAn:
                         # search it
                         self._up_to += 1
                         self._train_and_test_combo(centre_df) 
-                        # actual_centre_score = self.val_score #TODO: remove
 
                         # store its metadata into checked_list
                         self.checked_dict[tuple(centres[i])] = {'score': self.val_score}
                         self._save_checked_dict_as_pickle()
 
-                    # # copy the boundary dataframes - to turn into the correct training data for OLS (one lm model for each centre)
-                    # tmp_boundary = copy.deepcopy(boundaries)
-                    # tmp_boundary_drop = copy.deepcopy(boundaries)
-                    
-                    # n_cat = 0
-                    # for j in range(len(new_cat)):
-                
-                    #     if new_cat[self.hyperparameters[j]] == True:
-
-                    #         tmp_boundary = tmp_boundary[tmp_boundary[self.hyperparameters[j]] == categorical_value_list[i][n_cat]]
-                    #         tmp_boundary_drop = tmp_boundary_drop[tmp_boundary_drop[self.hyperparameters[j]] == categorical_value_list[i][n_cat]]
-                    #         tmp_boundary_drop = tmp_boundary_drop.drop([self.hyperparameters[j]], axis = 1)
-                    #         centre_OLS_df = centre_OLS_df.drop([self.hyperparameters[j]], axis=1)
-                    #         n_cat += 1
-
-                    # tmp_boundary_X = tmp_boundary_drop.drop(['score'], axis = 1)
-                    # tmp_boundary_y = tmp_boundary_drop['score']
-
-                    # OLS = sm.OLS(tmp_boundary_y, tmp_boundary_X).fit()
-                    # pred_centre_score = OLS.predict(centre_OLS_df)[0]
-                    # print('Pred centre score:', pred_centre_score)
-                    # print('Actual centre score:', actual_centre_score, '\n') # TODO: delete this whole OLS part
 
                     if self._is_new_best:
                         self._protective_bounds = self._get_protective_bounds2(tmp_boundary, new_cat)
