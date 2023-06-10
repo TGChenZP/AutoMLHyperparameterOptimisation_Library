@@ -747,9 +747,6 @@ class GuangAnB:
                 categorical_value_list = self._get_categorical(new_cat, boundaries)
 
                 for i in range(len(centres)): # run through each different centre
-
-                    # create a dataframe version of centre (so we could put it into OLS)
-                    centre_OLS_df = pd.DataFrame({self.hyperparameters[j]:[centres[i][j]] for j in range(len(centres[i]))})
                     
                     # decide whether to search (criteria: has it been searched before)
                     if tuple(centres[i]) in self.checked_dict:
