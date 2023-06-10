@@ -244,28 +244,3 @@ class YiLong:
                     length = 60
 
                 display(tmp_df.sample(length, replace=False, random_state=self._seed))
-        """ View all evaluation metrics for combinations grouped by containing each individual value of a hyperparameter – for each hyperparameter 
-        If any of the individual values of a hyperparameter exceeds 60, then sample down to 60 without replacement """
-
-        for col in self.hyperparameters: # for each hyperparameter
-
-            if col == 'features': # report NingXiang score only
-                    continue
-
-            print('\nHYPERPARAMETER:', col.upper())
-
-            hyperparameter_values = list(set(self.tuning_result[col]))
-            hyperparameter_values.sort()
-            
-            # create this temporary dataframe
-            for value in hyperparameter_values: # for each value in the hyperparameter
-
-                print(f'{col} Value:', value)
-                tmp_df = self.tuning_result[self.tuning_result[col] == value] # select df with only those parameter values
-
-                if len(tmp_df) < 60:
-                    length = len(tmp_df)
-                else:
-                    length = 60
-
-                display(tmp_df.sample(length, replace=False, random_state=self._seed))
