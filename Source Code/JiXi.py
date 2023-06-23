@@ -568,9 +568,6 @@ class JiXi:
         if self.tuning_result_saving_address is None:
             print("Missing tuning result csv saving address, please run .set_tuning_result_saving_address() first")
 
-        if self.best_model_saving_address is None:
-            print("Missing best model saving address, please run .set_best_model_saving_address() first")
-
         self.key_stats_only = key_stats_only
 
         parallel_combo_to_tune = copy.deepcopy(self.combos)
@@ -811,7 +808,9 @@ class JiXi:
             self.best_score = val_score
             self.best_clf = clf
             self.best_combo = combo
-            self._save_best_model()
+            
+            if self.object_saving_address:
+                self._save_best_model()
             
         # update internal governing DataFrames
         self.checked[combo] = 1
