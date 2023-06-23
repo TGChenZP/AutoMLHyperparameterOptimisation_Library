@@ -957,7 +957,7 @@ class GuangAn:
         print('Max Score: \n', self.best_score)
         print('Max Combo: \n', self.best_combo)
 
-        print('% Combos Checked:', int(len(self.checked_dict)))
+        print('# Combos Checked:', int(len(self.checked_dict)))
 
 
 
