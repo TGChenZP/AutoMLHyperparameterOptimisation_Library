@@ -966,7 +966,13 @@ class YangZhou:
         print(f"PARALLEL TUNING PART {part} OF CRUISE FINISHED\n")
 
         print('Max Score: \n', self.best_score)
-        print('Max Combo: \n', self.best_combo)
+        print('Max Combo Index: \n', self.best_combo, 'out of', self.num_hyperparameters, '(note best combo is 0-indexed)')
+
+        final_combo = {self.hyperparameters[i]:self.parameter_choices[self.hyperparameters[i]][self.best_combo[i]] for i in range(len(self.hyperparameters))}
+        print('Max Combo Hyperparamer Combination: \n', final_combo)
+
+        if self._tune_features:
+            print('Max Combo Features: \n', self._feature_combo_n_index_map[self.best_combo[-1]])
 
         print('% Combos Checked:', int(sum(self.checked.reshape((np.prod(self.n_items))))), 'out of', np.prod(self.n_items), 'which is', f'{np.mean(self.checked).round(8)*100}%')
 
