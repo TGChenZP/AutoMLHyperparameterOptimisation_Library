@@ -25,7 +25,7 @@ def combine_tuning_results(tuning_results, output_address):
     combined_tuning_results = pd.DataFrame()
 
     for tuning_result in tuning_results:
-        combined_tuning_results = combined_tuning_results.append(tuning_result)
+        combined_tuning_results = pd.concat([combined_tuning_results, tuning_result])
     
     output_address_split = output_address.split('.csv')[0]
 

@@ -479,7 +479,7 @@ class ShaoXing:
 
             tmp = pd.DataFrame({'corr': [tmp_corr], 'r2': [tmp_r2], 'Fstat_pval': [tmp_Fstat_pval]})
 
-            out_df = out_df.append(tmp)
+            out_df = pd.concat([out_df, tmp])
 
         return out_df
 
