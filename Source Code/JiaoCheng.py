@@ -605,7 +605,7 @@ class JiaoCheng:
         tmp = pd.DataFrame(df_building_dict)
 
 
-        self.tuning_result = self.tuning_result.append(tmp)
+        self.tuning_result = pd.concat([self.tuning_result, tmp])
         self._save_tuning_result()
 
         # update best score stats

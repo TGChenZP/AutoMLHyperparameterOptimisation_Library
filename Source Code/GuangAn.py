@@ -731,7 +731,7 @@ class GuangAn:
 
                     # put this coord into df containing all boundaries (for later sliming depending on centre, and then OLS)
                     tmp_boundary = pd.DataFrame(combo_OLS_dict)
-                    boundaries = boundaries.append(tmp_boundary)
+                    boundaries = pd.concat([boundaries, tmp_boundary])
 
                 if len(boundaries) == 1: # if only one coordinate in this boundary (i.e. all categorical)
                     continue
@@ -882,7 +882,7 @@ class GuangAn:
 
                     # put this coord into df containing all boundaries (for later sliming depending on centre, and then OLS)
                     tmp_boundary = pd.DataFrame(combo_OLS_dict)
-                    boundaries = boundaries.append(tmp_boundary)
+                    boundaries = pd.concat([boundaries, tmp_boundary])
                 
                 if len(boundaries) == 1: # if only one coordinate in this boundary (i.e. all categorical)
                     continue
@@ -1167,7 +1167,7 @@ class GuangAn:
 
         tmp = pd.DataFrame(df_building_dict)
 
-        self.tuning_result = self.tuning_result.append(tmp)
+        self.tuning_result = pd.concat([self.tuning_result, tmp])
         self._save_tuning_result()
 
         self._is_new_best = 0
