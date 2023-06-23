@@ -955,7 +955,13 @@ class GuangAn:
         print("TUNING FINISHED\n")
 
         print('Max Score: \n', self.best_score)
-        print('Max Combo: \n', self.best_combo)
+        print('Max Combo Index: \n', self.best_combo)
+
+        final_combo = {self.hyperparameters[i]:self.best_combo[i] for i in range(len(self.hyperparameters))}
+        print('Max Combo Hyperparamer Combination: \n', final_combo)
+
+        if self._tune_features:
+            print('Max Combo Features: \n', self._feature_combo_n_index_map[self.best_combo[-1]])
 
         print('# Combos Checked:', int(len(self.checked_dict)))
 
