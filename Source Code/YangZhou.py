@@ -1254,28 +1254,32 @@ class YangZhou:
         # read DataFrame data into internal governing DataFrames of YangZhou
         for row in self.tuning_result.iterrows():
 
-            self._up_to += 1
-    
-            combo = list()
-            for hyperparam in self.hyperparameters:
-                if hyperparam == 'features':
-                    
-                    # reverse two dicts
-                    index_n_feature_combo_map = {self._feature_combo_n_index_map[key]:key for key in self._feature_combo_n_index_map}
-                    # special input
-                    combo.append(index_n_feature_combo_map[tuple(self._str_to_list(row[1]['features']))])
-                    
-                else:
-                    combo.append(self._parameter_value_map_index[hyperparam][row[1][hyperparam]])
+            try:
+                self._up_to += 1
+        
+                combo = list()
+                for hyperparam in self.hyperparameters:
+                    if hyperparam == 'features':
+                        
+                        # reverse two dicts
+                        index_n_feature_combo_map = {self._feature_combo_n_index_map[key]:key for key in self._feature_combo_n_index_map}
+                        # special input
+                        combo.append(index_n_feature_combo_map[tuple(self._str_to_list(row[1]['features']))])
+                        
+                    else:
+                        combo.append(self._parameter_value_map_index[hyperparam][row[1][hyperparam]])
 
-            combo = tuple(combo)
-            
-            self.checked[combo] = 1
-            
-            if self.clf_type == 'Regression':
-                self.result[combo] = row[1]['Val r2']
-            elif self.clf_type == 'Classification':
-                self.result[combo] = row[1]['Val accu']
+                combo = tuple(combo)
+                
+                self.checked[combo] = 1
+                
+                if self.clf_type == 'Regression':
+                    self.result[combo] = row[1]['Val r2']
+                elif self.clf_type == 'Classification':
+                    self.result[combo] = row[1]['Val accu']
+
+            except:
+                pass
         
         print(f"Successfully read in tuning result of {len(self.tuning_result)} rows")
 
