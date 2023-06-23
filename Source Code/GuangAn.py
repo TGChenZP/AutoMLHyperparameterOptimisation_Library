@@ -831,7 +831,7 @@ class GuangAn:
         run_through = True
 
         while cruise_bounds: # gets reset every time, so algo will keep running if there are bounds to operate on
-            print('cruise round')
+            print('Cruise Round')
             if run_through == True:
                 old_max_bounds = cruise_bounds[0]
 
@@ -1217,10 +1217,12 @@ class GuangAn:
 
     
 
-    def read_in_tuning_result_df(self, address): 
+    def read_in_tuning_result_df(self, df_address, object_address): 
         """ Read in checked dict from outputted pickle object """
 
-        with open(address, 'rb') as f:
+        self.tuning_result = pd.read_csv(df_address)
+
+        with open(object_address, 'rb') as f:
             self.checked_dict = pickle.load(f)
 
         self._up_to = len(self.checked_dict)

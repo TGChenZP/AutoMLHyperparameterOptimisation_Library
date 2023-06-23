@@ -770,9 +770,7 @@ class GuangAnB:
                         self.checked_dict[tuple(centres[i])] = {'score': self.val_score}
                         self._save_checked_dict_as_pickle()
 
-                    # copy the boundary dataframes - to turn into the correct training data for OLS (one lm model for each centre)
                     tmp_boundary = copy.deepcopy(boundaries)
-                    # tmp_boundary_drop = copy.deepcopy(boundaries)
                     
                     n_cat = 0
                     for j in range(len(new_cat)):
@@ -782,18 +780,7 @@ class GuangAnB:
                             # deal with newly become categorical features
 
                             tmp_boundary = tmp_boundary[tmp_boundary[self.hyperparameters[j]] == categorical_value_list[i][n_cat]]
-                            # tmp_boundary_drop = tmp_boundary_drop[tmp_boundary_drop[self.hyperparameters[j]] == categorical_value_list[i][n_cat]]
-                            # tmp_boundary_drop = tmp_boundary_drop.drop([self.hyperparameters[j]], axis = 1)
-                            # centre_OLS_df = centre_OLS_df.drop([self.hyperparameters[j]], axis=1)
                             n_cat += 1
-
-                    # tmp_boundary_X = tmp_boundary_drop.drop(['score'], axis = 1)
-                    # tmp_boundary_y = tmp_boundary_drop['score']
-
-                    # OLS = sm.OLS(tmp_boundary_y, tmp_boundary_X).fit()
-                    # pred_centre_score = OLS.predict(centre_OLS_df)[0]
-                    # print('Pred centre score:', pred_centre_score)
-                    # print('Actual centre score:', actual_centre_score, '\n')
 
                     if self._is_new_best:
                         self._protective_bounds = self._get_protective_bounds2(tmp_boundary, new_cat)
@@ -810,17 +797,6 @@ class GuangAnB:
                         if new_bounds_list != False:
                             for new_bounds in new_bounds_list:
                                 tmp_bounds_list.append((new_bounds, actual_centre_score))
-                    
-                    # if actual_centre_score >= pred_centre_score-0.005 and actual_centre_score <= pred_centre_score+0.005:
-                    #     print('FIT!\n')
-
-                    # else:
-                    #     bounds_original_format = self._rebuild_bounds_to_original_format(tmp_boundary, new_cat)
-                        # new_bounds_list = self._get_new_bounds(bounds_original_format, centres[i], new_cat)
-
-                        # if new_bounds_list != False:
-                        #     for new_bounds in new_bounds_list:
-                        #         tmp_bounds_list.append((new_bounds, actual_centre_score))
     
             tmp_bounds_list.sort(key=lambda x:x[1], reverse=True)
             n_accept = max(64, 2**len(self.hyperparameters))
@@ -838,7 +814,7 @@ class GuangAnB:
         run_through = True
 
         while cruise_bounds: # gets reset every time, so algo will keep running if there are bounds to operate on
-            print('cruise round')
+            print('Cruise Round')
             if run_through == True:
                 old_max_bounds = cruise_bounds[0]
 
@@ -901,9 +877,6 @@ class GuangAnB:
 
                 for i in range(len(centres)): # run through each different centre
 
-                    # create a dataframe version of centre (so we could put it into OLS)
-                    centre_OLS_df = pd.DataFrame({self.hyperparameters[j]:[centres[i][j]] for j in range(len(centres[i]))})
-                    
                     # decide whether to search (criteria: has it been searched before)
                     if tuple(centres[i]) in self.checked_dict:
                         self._check_already_trained_best_score(tuple(centres[i]))
@@ -1224,10 +1197,12 @@ class GuangAnB:
 
     
 
-    def read_in_tuning_result_df(self, address): 
+    def read_in_tuning_result_df(self, df_address, object_address): 
         """ Read in checked dict from outputted pickle object """
 
-        with open(address, 'rb') as f:
+        self.tuning_result = pd.read_csv(df_address)
+
+        with open(object_address, 'rb') as f:
             self.checked_dict = pickle.load(f)
 
         self._up_to = len(self.checked_dict)
