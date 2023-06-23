@@ -74,7 +74,7 @@ class GuangAnB:
         print("Read in Train X data")
 
         self.train_y = train_y
-        print("Read in Train x data")
+        print("Read in Train y data")
 
         self.val_x = val_x
         print("Read in Val X data")
