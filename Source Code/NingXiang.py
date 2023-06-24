@@ -76,16 +76,16 @@ class NingXiang:
         """ Get NingXiang scores based on LR feature importance """
 
         if self.clf_type == None:
-            print('clf_type not found, please run set_model_type() first')
-            return
+            raise AttributeError('clf_type not found, please run set_model_type() first')
+            
         
         if self.clf_type == 'Classification':
-            print(".get_lr_based_combinations() only works for continuous labels")
-            return
+            raise AttributeError(".get_lr_based_combinations() only works for continuous labels")
+            
 
         if self.train_x is None or self.train_y is None:
-            print('train_x and train_y not found, please run read_in_train_data')
-            return
+            raise AttributeError('train_x and train_y not found, please run read_in_train_data')
+            
 
         self.ningxiang_output = dict()
 
@@ -137,12 +137,12 @@ class NingXiang:
         """ Gets NingXiang scores based on RF feature importance """
         
         if self.clf_type == None:
-            print('clf_type not found, please run set_model_type() first')
-            return
+            raise AttributeError('clf_type not found, please run set_model_type() first')
+            
 
         if self.train_x is None or self.train_y is None:
-            print('train_x and train_y not found, please run read_in_train_data')
-            return
+            raise AttributeError('train_x and train_y not found, please run read_in_train_data')
+            
         
 
         # Initialise the Random Forest objects
@@ -227,8 +227,8 @@ class NingXiang:
         """ Shows feature importance dataframe """
 
         if self.feature_importance == None:
-            print('Please run .show_rf_stats()')
-            return
+            raise AttributeError('Please run .show_rf_stats()')
+        
 
         self.display(self.feature_importance)
 

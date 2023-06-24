@@ -112,24 +112,24 @@ class YiLong:
         assert type(ascending) == bool
 
         if self.tuning_result is None:
-            print('Please run read_tuning_result() first')
-            return
+            raise AttributeError('Please run read_tuning_result() first')
+            
         
         if interested_statistic is not None:
             if self.clf_type == 'Regression':
                 if interested_statistic not in self.regression_extra_output_columns:
-                    print('Statistic not valid for a Regression Model')
-                    return
+                    raise ValueError('Statistic not valid for a Regression Model')
+                    
 
             elif self.clf_type == 'Classification':
                 if interested_statistic not in self.classification_extra_output_columns:
-                    print('Statistic not valid for a Classification Model')
-                    return
+                    raise ValueError('Statistic not valid for a Classification Model')
+                    
             
             elif self.clf_type == 'GLM Regression':
                 if interested_statistic not in self.GLM_Regression_extra_output_columns:
-                    print('Statistic not valid for a GLM Regression Model')
-                    return
+                    raise ValueError('Statistic not valid for a GLM Regression Model')
+                    
         
         
 

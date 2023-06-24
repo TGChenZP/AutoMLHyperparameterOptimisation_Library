@@ -127,29 +127,25 @@ class ZhongShan:
 
         if df_name == 'Full':
             if self.full_data is None:
-                print("Please input Full Data before using this function")
-                return
+                raise AttributeError("Please input Full Data before using this function")
             else:
                 self.full_data = self.full_data.fillna(fill_value)
         
         elif df_name == 'Train':
             if self.train_data is None:
-                print("Please input Train Data before using this function")
-                return
+                raise AttributeError("Please input Train Data before using this function")
             else:
                 self.train_data = self.train_data.fillna(fill_value)
 
         elif df_name == 'Validate':
             if self.val_data is None:
-                print("Please input Validate Data before using this function")
-                return
+                raise AttributeError("Please input Validate Data before using this function")
             else:
                 self.val_data = self.val_data.fillna(fill_value)
 
         elif df_name == 'Test':
             if self.test_data is None:
-                print("Please input Test Data before using this function")
-                return
+                raise AttributeError("Please input Test Data before using this function")
             else:
                 self.test_data = self.test_data.fillna(fill_value)
         
@@ -184,16 +180,16 @@ class ZhongShan:
         """ OHE transform one column of data using pre-trained OHE object """
 
         if self.OHE_storage is None:
-            print("Please fit OHE using .one_hot_encode_fit_transform() before re-attempting")
-            return
+            raise AttributeError("Please fit OHE using .one_hot_encode_fit_transform() before re-attempting")
+            
         
         if col_to_ohe not in self.OHE_storage:
             print(f"Please fit OHE to column '{col_to_ohe}' using .one_hot_encode_fit_transform() before re-attempting  transform")
 
         if df_name == 'Full':
             if self.full_data is None:
-                print("Please input Full Data before using this function")
-                return
+                raise AttributeError("Please input Full Data before using this function")
+                
             else:
                 OHE_output = pd.DataFrame.sparse.from_spmatrix(\
                     self.OHE_storage[col_to_ohe]['OHE_object'].transform(self.full_data[[col_to_ohe]]))
@@ -205,8 +201,8 @@ class ZhongShan:
 
         elif df_name == 'Train':
             if self.train_data is None:
-                print("Please input Train Data before using this function")
-                return
+                raise AttributeError("Please input Train Data before using this function")
+                
             else:
                 OHE_output = pd.DataFrame.sparse.from_spmatrix(\
                     self.OHE_storage[col_to_ohe]['OHE_object'].transform(self.train_data[[col_to_ohe]]))
@@ -218,8 +214,7 @@ class ZhongShan:
 
         elif df_name == 'Validate':
             if self.val_data is None:
-                print("Please input Validate Data before using this function")
-                return
+                raise AttributeError("Please input Validate Data before using this function")
             else:
                 OHE_output = pd.DataFrame.sparse.from_spmatrix(\
                     self.OHE_storage[col_to_ohe]['OHE_object'].transform(self.val_data[[col_to_ohe]]))
@@ -231,8 +226,8 @@ class ZhongShan:
 
         elif df_name == 'Test':
             if self.test_data is None:
-                print("Please input Test Data before using this function")
-                return
+                raise AttributeError("Please input Test Data before using this function")
+                
             else:
                 OHE_output = pd.DataFrame.sparse.from_spmatrix(\
                     self.OHE_storage[col_to_ohe]['OHE_object'].transform(self.test_data[[col_to_ohe]]))
@@ -301,8 +296,8 @@ class ZhongShan:
 
         if df_name == 'Full':
             if self.full_data is None:
-                print("Please input Full Data before using this function")
-                return
+                raise AttributeError("Please input Full Data before using this function")
+                
             else:
                 display(self.full_data.head(view_how_many))
                 display(self.full_data.tail(view_how_many))
@@ -312,8 +307,8 @@ class ZhongShan:
         
         elif df_name == 'Train':
             if self.train_data is None:
-                print("Please input Train Data before using this function")
-                return
+                raise AttributeError("Please input Train Data before using this function")
+                
             else:
                 display(self.train_data.head(view_how_many))
                 display(self.train_data.tail(view_how_many))
@@ -323,8 +318,8 @@ class ZhongShan:
 
         elif df_name == 'Validate':
             if self.val_data is None:
-                print("Please input Validate Data before using this function")
-                return
+                raise AttributeError("Please input Validate Data before using this function")
+                
             else:
                 display(self.val_data.head(view_how_many))
                 display(self.val_data.tail(view_how_many))
@@ -334,8 +329,8 @@ class ZhongShan:
 
         elif df_name == 'Test':
             if self.test_data is None:
-                print("Please input Test Data before using this function")
-                return
+                raise AttributeError("Please input Test Data before using this function")
+                
             else:
                 display(self.test_data.head(view_how_many))
                 display(self.test_data.tail(view_how_many))
@@ -349,8 +344,8 @@ class ZhongShan:
         """ Compute basic summaries on Full Data """
 
         if self.retained_columns is None:
-            print('Please run .set_columns() before re-attempting this method')
-            return
+            raise AttributeError('Please run .set_columns() before re-attempting this method')
+            
 
         count_null = list()
         for col in self.retained_columns:
@@ -431,8 +426,8 @@ class ZhongShan:
         """ Print out the column types of the current Full Data """
 
         if self.numeric_cols is None or self.non_numeric_cols is None:
-            print('Please run .get_full_data_analysis() before re-attempting this method')
-            return
+            raise AttributeError('Please run .get_full_data_analysis() before re-attempting this method')
+            
 
         print("numeric columns:", self.numeric_cols, '\n')
         print("non-numeric columns:", self.non_numeric_cols, '\n')
@@ -443,8 +438,8 @@ class ZhongShan:
         """ Generate boxplots of a column using full data """
 
         if self.full_data_IDE_T is None:
-            print('Please run .get_full_data_analysis() before re-attempting this method')
-            return
+            raise AttributeError('Please run .get_full_data_analysis() before re-attempting this method')
+            
 
         fig, axes = plt.subplots(nrows=1, ncols=1) 
         plt.boxplot(self.full_data[col]);
@@ -464,8 +459,8 @@ class ZhongShan:
         """ Print the full Full Data IDE dataframe """
 
         if self.full_data_IDE is None:
-            print('Please run .get_full_data_analysis() before re-attempting this method')
-            return
+            raise AttributeError('Please run .get_full_data_analysis() before re-attempting this method')
+            
 
         display(self.full_data_IDE)
 
@@ -475,12 +470,12 @@ class ZhongShan:
         """ For one retained column, print out the Full Data summary and also boxplot """
 
         if self.retained_columns is None:
-            print('Please run .set_columns() before re-attempting this method')
-            return
+            raise AttributeError('Please run .set_columns() before re-attempting this method')
+            
 
         if self.full_data_IDE_T is None:
-            print('Please run .get_full_data_analysis() before re-attempting this method')
-            return
+            raise AttributeError('Please run .get_full_data_analysis() before re-attempting this method')
+            
 
         if col in self.retained_columns:
             print(f"Full Data IDE on column '{col}'")
@@ -495,8 +490,8 @@ class ZhongShan:
         """ Print out all Full Data summary column by column and also boxplot """
 
         if self.retained_columns is None:
-            print('Please run .set_columns() before re-attempting this method')
-            return
+            raise AttributeError('Please run .set_columns() before re-attempting this method')
+            
 
         for col in self.retained_columns:
             self.view_full_data_col_analysis(col)
@@ -545,8 +540,8 @@ class ZhongShan:
         """ View dataframe that stores PCA explained variance """
 
         if self.pca_explained_variance_ratio is None:
-            print("Please fit PCA object using .pca_fit() before re-attempting")
-            return
+            raise AttributeError("Please fit PCA object using .pca_fit() before re-attempting")
+            
 
         print("PCA Explained Variance")
         display(pd.DataFrame({'explained_variance_ratio':list(self.pca_explained_variance_ratio)}, 
@@ -558,8 +553,8 @@ class ZhongShan:
         """ Set how many dimensions of PCA we want to use in the end """
 
         if self.pca is None:
-            print("Please fit PCA using .pca_fit() and view explained variance using .view_pca_explained_variance_ratio() before setting final_ncomponents")
-            return
+            raise AttributeError("Please fit PCA using .pca_fit() and view explained variance using .view_pca_explained_variance_ratio() before setting final_ncomponents")
+            
 
         self.final_ncomponents = final_ncomponents
         print(f'Using first {final_ncomponents} PCA components')
@@ -574,14 +569,14 @@ class ZhongShan:
         """ PCA transform data using pre-trained PCA object """
 
         if self.pca is None:
-            print("Please fit PCA object using .pca_fit() before re-attempting")
-            return
+            raise AttributeError("Please fit PCA object using .pca_fit() before re-attempting")
+            
 
 
         if df_name == 'Full':
             if self.full_data is None:
-                print("Please input Full Data before using this function")
-                return
+                raise AttributeError("Please input Full Data before using this function")
+                
             else:
                 pca_tmp = self.pca.transform(self.full_data[self.feature_columns])
             
@@ -597,8 +592,8 @@ class ZhongShan:
 
         elif df_name == 'Train':
             if self.train_data is None:
-                print("Please input Train Data before using this function")
-                return
+                raise AttributeError("Please input Train Data before using this function")
+                
             else:
                 pca_tmp = self.pca.transform(self.train_data[self.feature_columns])
             
@@ -614,8 +609,8 @@ class ZhongShan:
 
         elif df_name == 'Validate':
             if self.val_data is None:
-                print("Please input Validate Data before using this function")
-                return
+                raise AttributeError("Please input Validate Data before using this function")
+                
             else:
                 pca_tmp = self.pca.transform(self.val_data[self.feature_columns])
             
@@ -631,8 +626,8 @@ class ZhongShan:
 
         elif df_name == 'Test':
             if self.test_data is None:
-                print("Please input Test Data before using this function")
-                return
+                raise AttributeError("Please input Test Data before using this function")
+                
             else:
                 pca_tmp = self.pca.transform(self.test_data[self.feature_columns])
             
@@ -674,8 +669,8 @@ class ZhongShan:
         """ Fit standardiser using Full Data """
 
         if self.train_data is None:
-            print('Please input Train Data before re-attempting')
-            return
+            raise AttributeError('Please input Train Data before re-attempting')
+            
 
         self.standardiser_objects = dict()
 
@@ -691,14 +686,14 @@ class ZhongShan:
         """ Transform data using pre-fitted standardiser """
 
         if self.standardiser_objects is None:
-            print("Please use .standardise_fit() to fit standardisers before re-attempting")
-            return
+            raise AttributeError("Please use .standardise_fit() to fit standardisers before re-attempting")
+            
 
         if df_name == 'Full':
             
             if self.full_data is None:
-                print("Please input Full Data before using this function")
-                return
+                raise AttributeError("Please input Full Data before using this function")
+                
             else:
 
                 for col in self.retained_columns:
@@ -711,8 +706,8 @@ class ZhongShan:
         elif df_name == 'Train':
             
             if self.train_data is None:
-                print("Please input Train Data before using this function")
-                return
+                raise AttributeError("Please input Train Data before using this function")
+                
             else:
                 for col in self.retained_columns:
                     standardiser = self.standardiser_objects[col]
@@ -724,8 +719,8 @@ class ZhongShan:
         elif df_name == 'Validate':
 
             if self.val_data is None:
-                print("Please input Validate Data before using this function")
-                return
+                raise AttributeError("Please input Validate Data before using this function")
+                
             else:
                 for col in self.retained_columns:
                     standardiser = self.standardiser_objects[col]
@@ -737,8 +732,8 @@ class ZhongShan:
         elif df_name == 'Test':
             
             if self.test_data is None:
-                print("Please input Test Data before using this function")
-                return
+                raise AttributeError("Please input Test Data before using this function")
+                
             else:
                 for col in self.retained_columns:
                     standardiser = self.standardiser_objects[col]
@@ -763,12 +758,12 @@ class ZhongShan:
         """ Calculate correlation and absolute Correlation Matrix on Training Data """
 
         if self.train_data is None:
-            print('Please input Train Data before using this function')
-            return
+            raise AttributeError('Please input Train Data before using this function')
+            
         
         if self.retained_columns is None:
-            print("Please run .set_columns() before re-attempting")
-            return
+            raise AttributeError("Please run .set_columns() before re-attempting")
+            
 
         self.corr_matrix = self.train_data[self.retained_columns].corr(method='pearson')
         self.abs_corr_matrix = self.corr_matrix.apply(abs)
@@ -781,8 +776,8 @@ class ZhongShan:
         """ View the correlation matrix """
         
         if self.corr_matrix is None:
-            print('Please run .get_abs_corr() before re-attempting')
-            return
+            raise AttributeError('Please run .get_abs_corr() before re-attempting')
+            
 
         display(self.corr_matrix)
 
@@ -792,8 +787,8 @@ class ZhongShan:
         """ View the absolute correlation matrix """
 
         if self.abs_corr_matrix is None:
-            print('Please run .get_abs_corr() before re-attempting')
-            return
+            raise AttributeError('Please run .get_abs_corr() before re-attempting')
+            
 
         display(self.abs_corr_matrix)
 
@@ -803,8 +798,8 @@ class ZhongShan:
         """ View the absolute correlation heatmap """
 
         if self.abs_corr_matrix is None:
-            print('Please run .get_abs_corr() before re-attempting')
-            return
+            raise AttributeError('Please run .get_abs_corr() before re-attempting')
+            
 
         fig, axes = plt.subplots(figsize=(20,20), nrows=1, ncols=1, dpi=80) 
         sns.heatmap(self.abs_corr_matrix)
@@ -817,8 +812,8 @@ class ZhongShan:
         """ View the sorted absolute correlation for features on each label """
 
         if self.abs_corr_matrix is None:
-            print('Please run .get_abs_corr() before re-attempting')
-            return
+            raise AttributeError('Please run .get_abs_corr() before re-attempting')
+            
 
         for col in self.label_columns:
             print(f'Correlation between features and {col}')
@@ -830,12 +825,12 @@ class ZhongShan:
         """ Calculate the NMI Matrix on Training data """
 
         if self.train_data is None:
-            print('Please input Train Data before using this function')
-            return
+            raise AttributeError('Please input Train Data before using this function')
+            
         
         if self.retained_columns is None:
-            print("Please run .set_columns() before re-attempting")
-            return
+            raise AttributeError("Please run .set_columns() before re-attempting")
+            
 
         self.NMI_matrix = pd.DataFrame({col:[0.0 for i in range(len(self.retained_columns))] for col in self.retained_columns}, index = self.retained_columns)
 
@@ -855,8 +850,8 @@ class ZhongShan:
         """ View the NMI matrix """
 
         if self.NMI_matrix is None:
-            print('Please run .get_nmi() before re-attempting')
-            return
+            raise AttributeError('Please run .get_nmi() before re-attempting')
+            
 
         display(self.NMI_matrix)
     
@@ -866,8 +861,8 @@ class ZhongShan:
         """ View the NMI heatmap """
 
         if self.NMI_matrix is None:
-            print('Please run .get_nmi() before re-attempting')
-            return
+            raise AttributeError('Please run .get_nmi() before re-attempting')
+            
 
         fig, axes = plt.subplots(figsize=(20,20), nrows=1, ncols=1, dpi=80) 
         sns.heatmap(self.NMI_matrix)
@@ -879,8 +874,8 @@ class ZhongShan:
         """ View sorted NMI for features on each label """
 
         if self.NMI_matrix is None:
-            print('Please run .get_nmi() before re-attempting')
-            return
+            raise AttributeError('Please run .get_nmi() before re-attempting')
+            
 
         for col in self.label_columns:
             print(f'NMI between features and {col}')
@@ -892,12 +887,12 @@ class ZhongShan:
         """ Plot scatter plot with feature on x axis and label on y axis """
 
         if self.train_data is None:
-            print('Please run .get_nmi() before re-attempting')
-            return
+            raise AttributeError('Please run .get_nmi() before re-attempting')
+            
 
         if self.label_columns is None:
-            print('Please run .get_nmi() before re-attempting')
-            return
+            raise AttributeError('Please run .get_nmi() before re-attempting')
+            
 
         for label in self.label_columns:
             fig, axes = plt.subplots(nrows=1, ncols=1, dpi=80) 
@@ -944,8 +939,8 @@ class ZhongShan:
         """ View feature-label analysis for one feature """
         
         if self.NMI_matrix is None:
-            print('Please run .get_nmi() before re-attempting')
-            return
+            raise AttributeError('Please run .get_nmi() before re-attempting')
+            
 
         if col in self.retained_columns:
             print(f"Feature-Label Data IDE on column '{col}'")
@@ -975,14 +970,14 @@ class ZhongShan:
 
         if scatter_type == 'continuous':
             if f'{feature}:{label}' not in self.cont_scatter_plot:
-                print("Plot does not exist - create it using various functions before re-attempting")
-                return
+                raise AttributeError("Plot does not exist - create it using various functions before re-attempting")
+                
 
             self.cont_scatter_plot[f'{feature}:{label}.png'].savefig(f'{address_split}.png')
         else:
             if f'{feature}:{label}' not in self.cat_scatter_plot:
-                print("Plot does not exist - create it using various functions before re-attempting")
-                return
+                raise AttributeError("Plot does not exist - create it using various functions before re-attempting")
+                
 
             self.cat_scatter_plot[f'{feature}:{label}.png'].savefig(f'{address_split}.png')
 
@@ -994,22 +989,22 @@ class ZhongShan:
         """ Extract lists that contain selected features for each label """
 
         if self.label_columns is None:
-            print("Please run .set_columns() before re-attempting")
-            return
+            raise AttributeError("Please run .set_columns() before re-attempting")
+            
 
         tmp_final_features = dict()
         self.final_features = dict()
 
         if metric == 'corr':
             if self.abs_corr_matrix is None:
-                print("Please run .get_abs_corr() before re-attempting")
-                return
+                raise AttributeError("Please run .get_abs_corr() before re-attempting")
+                
             for label in self.label_columns:
                 tmp_final_features[label] = list(self.abs_corr_matrix[self.abs_corr_matrix[label]>self.feature_selection_cutoffs].index)
         elif metric == 'nmi':
             if self.NMI_matrix is None:
-                print("Please run .get_nmi() before re-attempting")
-                return
+                raise AttributeError("Please run .get_nmi() before re-attempting")
+                retrn
 
             for label in self.label_columns:
                 tmp_final_features[label] = list(self.NMI_matrix[self.NMI_matrix[label]>self.feature_selection_cutoffs].index)
@@ -1029,21 +1024,21 @@ class ZhongShan:
         """ Apply the columns to our data """
 
         if self.full_data is None:
-            print("Please input Full Data")
-            return
+            raise AttributeError("Please input Full Data")
+            
         if self.train_data is None:
-            print("Please input Train Data")
-            return
+            raise AttributeError("Please input Train Data")
+            
         if self.val_data is None:
-            print("Please input Validation Data")
-            return
+            raise AttributeError("Please input Validation Data")
+            
         if self.test_data is None:
-            print("Please input Test Data")
-            return
+            raise AttributeError("Please input Test Data")
+            
 
         if self.feature_columns is None:
-            print("Please run .set_columns() before re-attempting")
-            return
+            raise AttributeError("Please run .set_columns() before re-attempting")
+            
 
         for label in self.label_columns:
             feature_columns = self.final_features[label]
@@ -1116,8 +1111,8 @@ class SanMin:
     def __init__(self, input, input_type):
         
         if input_type not in ('ZhongShan', 'Components'):
-            print('input_type must be either "ZhongShan" or "Components"')
-            return 
+            raise AttributeError('input_type must be either "ZhongShan" or "Components"')
+             
 
         if input_type == 'ZhongShan':
             self.OHE_storage = copy.deepcopy(input.OHE_storage)
@@ -1174,8 +1169,8 @@ class SanMin:
         """ export the manipulated future data """
 
         if self.feature_selected_future_data is None:
-            print('Please run .get_feature_selected_data() before re-attempting')
-            return
+            raise AttributeError('Please run .get_feature_selected_data() before re-attempting')
+            
         
         address_split = address.split('.csv')[0]
         
@@ -1187,12 +1182,12 @@ class SanMin:
         """ Transform data using pre-fitted standardiser """
 
         if self.standardiser_objects is None:
-            print("No standardiser in this SanMin")
-            return
+            raise AttributeError("No standardiser in this SanMin")
+            
 
         if self.future_data is None:
-            print("Please input Future Data before using this function")
-            return
+            raise AttributeError("Please input Future Data before using this function")
+            
         else:
             for col in self.retained_columns:
                 standardiser = self.standardiser_objects[col]
@@ -1209,8 +1204,8 @@ class SanMin:
         """ Helper to fill na values in data with default value 0 """
 
         if self.future_data is None:
-            print("Please input Future Data before using this function")
-            return
+            raise AttributeError("Please input Future Data before using this function")
+            
         else:
             self.future_data = self.future_data.fillna(fill_value)
         
@@ -1222,15 +1217,15 @@ class SanMin:
         """ OHE transform one column of data using pre-trained OHE object """
 
         if self.OHE_storage is None:
-            print("No OHE in this SanMin")
-            return
+            raise AttributeError("No OHE in this SanMin")
+            
         
         if col_to_ohe not in self.OHE_storage:
             print(f"No OHE of this column in this SanMin")
 
         if self.future_data is None:
-            print("Please input Full Data before using this function")
-            return
+            raise AttributeError("Please input Full Data before using this function")
+            
 
         else:
             OHE_output = pd.DataFrame.sparse.from_spmatrix(\
@@ -1249,12 +1244,12 @@ class SanMin:
         """ PCA transform data using pre-trained PCA object """
 
         if self.pca is None:
-            print("No PCA object in this SanMin")
-            return
+            raise AttributeError("No PCA object in this SanMin")
+            
 
         if self.future_data is None:
-            print("Please input Future Data before using this function")
-            return
+            raise AttributeError("Please input Future Data before using this function")
+            
         else:
             pca_tmp = self.pca.transform(self.future_data[self.feature_columns])
         
@@ -1276,12 +1271,12 @@ class SanMin:
         """ Apply the pre-selected columns to Future Data data """
 
         if self.future_data is None:
-            print("Please input Future Data")
-            return
+            raise AttributeError("Please input Future Data")
+            
 
         if self.feature_columns is None:
-            print("Please run .set_columns() before re-attempting")
-            return
+            raise AttributeError("Please run .set_columns() before re-attempting")
+            
 
         for label in self.feature_columns:
             feature_columns = self.final_features[label]
@@ -1295,8 +1290,8 @@ class SanMin:
         """ View the absolute correlation matrix """
 
         if self.abs_corr_matrix is None:
-            print('The ZhongShan object which produced this SanMin did not have run .get_abs_corr()')
-            return
+            raise AttributeError('The ZhongShan object which produced this SanMin did not have run .get_abs_corr()')
+            
 
         display(self.abs_corr_matrix)
 
@@ -1306,9 +1301,7 @@ class SanMin:
         """ View the NMI matrix """
 
         if self.NMI_matrix is None:
-            print('The ZhongShan object which produced this SanMin did not have run .get_nmi()')
-            print('Please run .get_nmi() before re-attempting')
-            return
+            raise AttributeError('The ZhongShan object which produced this SanMin did not have run .get_nmi(). Please run .get_nmi() before re-attempting')
 
         display(self.NMI_matrix)
 

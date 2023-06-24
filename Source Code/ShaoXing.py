@@ -84,8 +84,8 @@ class ShaoXing:
         """ Read in Full, Train, Validate, Test data, auto transforming to X, y """
 
         if self.features == None or self.label == None:
-            print("Missing features list and label. Please run .read_in_features_label before running this function")
-            return
+            raise AttributeError("Missing features list and label. Please run .read_in_features_label before running this function")
+            
 
         for col in self.features:
             assert col in full_data.columns
@@ -188,8 +188,8 @@ class ShaoXing:
         """ Exports the model as a .pickle """
 
         if self._model_fitted == 0:
-            print('Please fit model using .fit_model() before exporting')
-            return
+            raise AttributeError('Please fit model using .fit_model() before exporting')
+   
         
         model_export_address_strip = model_export_address.split('.pickle')[0]
 
@@ -202,12 +202,12 @@ class ShaoXing:
         """ Make predictions for future x data """
 
         if self._model_fitted == 0:
-            print('Model not fitted, please use .read_in_fitted_model() to read in a fitted model or .fit_model() to fit model')
-            return
+            raise AttributeError('Model not fitted, please use .read_in_fitted_model() to read in a fitted model or .fit_model() to fit model')
+            
 
         if self.future_data is None:
-            print('No future data found, please run .read_in_future_data()')
-            return
+            raise AttributeError('No future data found, please run .read_in_future_data()')
+            
 
         self.future_pred = self.model.predict(self.future_data)
 
@@ -755,22 +755,22 @@ class ShaoXing:
         """ Save residual plots"""
         
         if feature not in self.features:
-            print('Feature not valid')
-            return
+            raise AttributeError('Feature not valid')
+            
         
         if data_type not in ('Train', 'Val', 'Test'):
-            print('Input data type must either be "Train", "Val" or "Test"')
-            return
+            raise AttributeError('Input data type must either be "Train", "Val" or "Test"')
+            
         
         if self.RESIDUAL_PLOT_OBJECTS['Train'] is None:
-            print("Please run .get_residual_plots() first")
-            return
+            raise AttributeError("Please run .get_residual_plots() first")
+            
 
         address_split = address.split('.png')[0]
 
         if feature not in self.RESIDUAL_PLOT_OBJECTS[data_type]:
-            print("Plot does not exist - create it using various functions before re-attempting")
-            return
+            raise AttributeError("Plot does not exist - create it using various functions before re-attempting")
+            
         
         self.RESIDUAL_PLOT_OBJECTS[data_type][feature].savefig(f'{address_split}.png')
     
