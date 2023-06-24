@@ -637,6 +637,8 @@ class GuangAnB:
     def _protective_bounds_to_original_bounds(self):
         """ Helper to turn protective bounds back to original bounds """
 
+        ## TODO: Potential problem in this function
+
         protective_to_original_bounds = list()
         for i in range(len(self._protective_bounds)):
             if type(self._protective_bounds[i]) is set: # discrete
@@ -919,6 +921,8 @@ class GuangAnB:
                 max_bounds = self._protective_bounds_to_original_bounds()
                 if max_bounds != old_max_bounds:
                     cruise_bounds = [max_bounds]
+                else:
+                    cruise_bounds = []
             else:
                 tmp_bounds_list.sort(key=lambda x:x[1], reverse=True)
                 n_accept = max(64, 2**len(self.hyperparameters))
