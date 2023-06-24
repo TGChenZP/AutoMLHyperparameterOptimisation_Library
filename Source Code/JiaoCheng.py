@@ -1,4 +1,4 @@
-# 11/04/2023
+# 24/06/2023
 
 
 
@@ -196,13 +196,13 @@ class JiaoCheng:
         """ Input Non tuneable hyperparameter choice """
 
         if type(non_tuneable_hyperparameter_choice) is not dict:
-            print('non_tuneable_hyeprparameters_choice must be dict, please try again')
-            return
+            raise TypeError('non_tuneable_hyeprparameters_choice must be dict, please try again')
+            
         
         for nthp in non_tuneable_hyperparameter_choice:
             if type(non_tuneable_hyperparameter_choice[nthp]) in (set, list, tuple, dict):
-                print('non_tuneable_hyperparameters_choice must not be of array-like type')
-                return
+                raise TypeError('non_tuneable_hyperparameters_choice must not be of array-like type')
+                
 
         self.non_tuneable_parameter_choices = non_tuneable_hyperparameter_choice
 
@@ -214,23 +214,23 @@ class JiaoCheng:
         """ Input features """
 
         if type(ningxiang_output) is not dict:
-            print("Please ensure NingXiang output is a dict")
-            return
+            raise TypeError("Please ensure NingXiang output is a dict")
+            
         
         if not self.hyperparameters:
-            print("Missing hyperparameter choices, please run .set_hyperparameters() first")
-            return
+            raise AttributeError("Missing hyperparameter choices, please run .set_hyperparameters() first")
+            
         
         for feature in list(ningxiang_output.keys())[-1]:
             if feature not in list(self.train_x.columns):
-                print(f'feature {feature} in ningxiang output is not in train_x. Please try again')
-                return
+                raise ValueError(f'feature {feature} in ningxiang output is not in train_x. Please try again')
+                
             if feature not in list(self.val_x.columns):
-                print(f'feature {feature} in ningxiang output is not in val_x. Please try again')
-                return
+                raise ValueError(f'feature {feature} in ningxiang output is not in val_x. Please try again')
+                
             if feature not in list(self.test_x.columns):
-                print(f'feature {feature} in ningxiang output is not in test_x. Please try again')
-                return
+                raise ValueError(f'feature {feature} in ningxiang output is not in test_x. Please try again')
+                
         
         # sort ningxiang just for safety, and store up
         ningxiang_output_sorted = self._sort_features(ningxiang_output)
@@ -278,22 +278,22 @@ class JiaoCheng:
         """ Input sorting order """
         
         if type(order) is not list:
-            print("order must be a list, please try agian")
-            return
+            raise TypeError("order must be a list, please try agian")
+            
         
         if self.hyperparameters == False:
-            print('Please run set_hyperparameters() first')
-            return
+            raise AttributeError('Please run set_hyperparameters() first')
+            
         
         if 'features' in self.hyperparameters:
             if self._tune_features == False:
-                print('Please run set_features() first')
-                return
+                raise AttributeError('Please run set_features() first')
+                
         
         for hp in order:
             if hp not in self.hyperparameters:
-                print(f'Feature {hp} is not in self.hyperparameters which was set by set_hyperparameters(); consider reinitiating JiaoCheng or double checking input')
-                return
+                raise ValueError(f'Feature {hp} is not in self.hyperparameters which was set by set_hyperparameters(); consider reinitiating JiaoCheng or double checking input')
+                
 
         self.hyperparameter_tuning_order = order
         self._tuning_order_map_hp = {self.hyperparameters[i]:i for i in range(len(self.hyperparameters))}
@@ -304,25 +304,25 @@ class JiaoCheng:
         """ Input default values for hyperparameters """
 
         if type(default_values) is not dict:
-            print("default_values must be a dict, please try agian")
-            return
+            raise TypeError("default_values must be a dict, please try agian")
+            
         
         if self.hyperparameters == False:
-            print('Please run set_hyperparameters() first')
-            return
+            raise AttributeError('Please run set_hyperparameters() first')
+            
         
         if 'features' in self.hyperparameters:
             if self._tune_features == False:
-                print('Please run set_features() first')
-                return
+                raise AttributeError('Please run set_features() first')
+
         
         for hp in default_values:
             if hp not in self.hyperparameters:
-                print(f'Feature {hp} is not in self.hyperparameter which was set by set_hyperparameters(); consider reinitiating JiaoCheng or double checking input')
-                return
+                raise ValueError(f'Feature {hp} is not in self.hyperparameter which was set by set_hyperparameters(); consider reinitiating JiaoCheng or double checking input')
+                
             if default_values[hp] not in self.parameter_choices[hp]:
-                print(f'{default_values[hp]} is not a value to try out in self.hyperparameter which was set by set_hyperparameters(). consider reinitiating JiaoCheng or double checking input')
-                return
+                raise ValueError(f'{default_values[hp]} is not a value to try out in self.hyperparameter which was set by set_hyperparameters(). consider reinitiating JiaoCheng or double checking input')
+                
 
         self.hyperparameter_default_values = default_values
 
@@ -332,19 +332,19 @@ class JiaoCheng:
         """ Begin tuning """
 
         if self.train_x is None or self.train_y is None or self.val_x is None or self.val_y is None or self.test_x is None or self.test_y is None:
-            print(" Missing one of the datasets, please run .read_in_data() ")
-            return
+            raise AttributeError(" Missing one of the datasets, please run .read_in_data() ")
+            
 
         if self.model is None:
-            print(" Missing model, please run .read_in_model() ")
-            return
+            raise AttributeError(" Missing model, please run .read_in_model() ")
+            
         
         if self.combos is None:
-            print("Missing hyperparameter choices, please run .set_hyperparameters() first")
-            return
+            raise AttributeError("Missing hyperparameter choices, please run .set_hyperparameters() first")
+            
 
         if self.tuning_result_saving_address is None:
-            print("Missing tuning result csv saving address, please run .set_tuning_result_saving_address() first")
+            raise AttributeError("Missing tuning result csv saving address, please run .set_tuning_result_saving_address() first")
 
         self.key_stats_only = key_stats_only
         
@@ -661,10 +661,10 @@ class JiaoCheng:
         """ Read in tuning result csv and read data into checked and result arrays """
 
         if self.parameter_choices is None:
-            print("Missing parameter_choices to build _parameter_value_map_index, please run set_hyperparameters() first")
+            raise AttributeError("Missing parameter_choices to build _parameter_value_map_index, please run set_hyperparameters() first")
 
         if self.clf_type is None:
-            print('Missing clf_type. Please run .read_in_model() first.')
+            raise AttributeError('Missing clf_type. Please run .read_in_model() first.')
 
         self.tuning_result = pd.read_csv(address)
 

@@ -1,4 +1,4 @@
-# 10/6/2023
+# 24/06/2023
 
 
 
@@ -167,13 +167,13 @@ class GuangAnB:
         """ Input Non tuneable hyperparameter choice """
 
         if type(non_tuneable_hyperparameter_choice) is not dict:
-            print('non_tuneable_hyeprparameters_choice must be dict, please try again')
-            return
+            raise TypeError('non_tuneable_hyeprparameters_choice must be dict, please try again')
+            
         
         for nthp in non_tuneable_hyperparameter_choice:
             if type(non_tuneable_hyperparameter_choice[nthp]) in (set, list, tuple, dict):
-                print('non_tuneable_hyperparameters_choice must not be of array-like type')
-                return
+                raise TypeError('non_tuneable_hyperparameters_choice must not be of array-like type')
+                
 
         self.non_tuneable_parameter_choices = non_tuneable_hyperparameter_choice
 
@@ -185,12 +185,12 @@ class GuangAnB:
         """ Function to read in transformation settings """
 
         if not self.hyperparameters:
-            print("Missing hyperparameter choices, please run .set_hyperparameters() first")
-            return
+            raise AttributeError("Missing hyperparameter choices, please run .set_hyperparameters() first")
+            retrn
 
         if type(transform_update) is not dict:
-            print('transform_update should be a dict, please re-enter')
-            return
+            raise TypeError('transform_update should be a dict, please re-enter')
+            
 
         for key in transform_update:
             self.transform[key] = transform_update[key]
@@ -203,12 +203,12 @@ class GuangAnB:
         """ Function to read in categorical settings """
 
         if not self.hyperparameters:
-            print("Missing hyperparameter choices, please run .set_hyperparameters() first")
-            return
+            raise AttributeError("Missing hyperparameter choices, please run .set_hyperparameters() first")
+            
 
         if type(categorical_update) is not list:
-            print('categorical_update should be a list, please re-enter')
-            return
+            raise TypeError('categorical_update should be a list, please re-enter')
+            
 
         for key in categorical_update:
             self.categorical[key] = True
@@ -226,23 +226,23 @@ class GuangAnB:
         """ Input features """
 
         if type(ningxiang_output) is not dict:
-            print("Please ensure NingXiang output is a dict")
-            return
+            raise TypeError("Please ensure NingXiang output is a dict")
+            
         
         if not self.hyperparameters:
-            print("Missing hyperparameter choices, please run .set_hyperparameters() first")
-            return
+            raise AttributeError("Missing hyperparameter choices, please run .set_hyperparameters() first")
+            
         
         for feature in list(ningxiang_output.keys())[-1]:
             if feature not in list(self.train_x.columns):
-                print(f'feature {feature} in ningxiang output is not in train_x. Please try again')
-                return
+                raise ValueError(f'feature {feature} in ningxiang output is not in train_x. Please try again')
+                
             if feature not in list(self.val_x.columns):
-                print(f'feature {feature} in ningxiang output is not in val_x. Please try again')
-                return
+                raise ValueError(f'feature {feature} in ningxiang output is not in val_x. Please try again')
+                
             if feature not in list(self.test_x.columns):
-                print(f'feature {feature} in ningxiang output is not in test_x. Please try again')
-                return
+                raise ValueError(f'feature {feature} in ningxiang output is not in test_x. Please try again')
+                
 
         
         # sort ningxiang just for safety, and store up
@@ -661,12 +661,12 @@ class GuangAnB:
         """ Begin tuning """
 
         if self.train_x is None or self.train_y is None or self.val_x is None or self.val_y is None or self.test_x is None or self.test_y is None:
-            print(" Missing one of the datasets, please run .read_in_data() ")
-            return
+            raise AttributeError(" Missing one of the datasets, please run .read_in_data() ")
+            
 
         if self.model is None:
-            print(" Missing model, please run .read_in_model() ")
-            return
+            raise AttributeError(" Missing model, please run .read_in_model() ")
+            
 
         if self.tuning_result_saving_address is None:
             print("Missing tuning result csv saving address, please run .set_tuning_result_saving_address() first")
