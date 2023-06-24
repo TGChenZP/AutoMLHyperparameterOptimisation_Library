@@ -705,8 +705,9 @@ class JiaoCheng:
                 elif self.clf_type == 'Classification':
                     self.result[combo] = row[1]['Val accu']
 
-            except:
-                pass
+            except Exception as e:
+                print(f"Error message: {str(e)}")
+                print('Error Importing this Row:', row)
 
         print(f"Successfully read in tuning result of {len(self.tuning_result)} rows")
 
