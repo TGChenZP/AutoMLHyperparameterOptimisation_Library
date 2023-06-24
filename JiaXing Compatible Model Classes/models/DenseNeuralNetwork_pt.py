@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import pandas as pd
 import numpy as np
 
 from torch.utils.data import Dataset, DataLoader
@@ -34,8 +35,7 @@ class DenseNeuralNetwork(nn.Module):
             dropout_prob, 
             input_size, 
             output_size, 
-            batch_normalisation,
-            last_activation_function = 'relu',):
+            batch_normalisation):
 
         super(DenseNeuralNetwork, self).__init__()
 
@@ -61,7 +61,7 @@ class DenseNeuralNetwork(nn.Module):
             self.dropout_layer.append(nn.Dropout(dropout_prob))
 
         self.nn_layers.append(nn.Linear(hidden_layer_n_neurons[-1], output_size))
-        self.activation_layer.append(self.ACTIVATION_FUNCTIONS_MAP[last_activation_function])
+
 
 
     def forward(self, x, training=True):
@@ -81,7 +81,6 @@ class DenseNeuralNetwork(nn.Module):
                 out = self.dropout_layer[i](out)
             
         out = self.nn_layers[-1](out)
-        out = self.activation_layer[-1](out)
         
         return out
     
@@ -107,7 +106,6 @@ class DNN_const_pt:
                  gpu = False,
                  gpu_id = 0,
                  loss_function='MSE',
-                 last_activation_function = 'relu',
                  **kwargs):
 
         self.n_hidden_layers = n_hidden_layers
@@ -122,7 +120,6 @@ class DNN_const_pt:
         self.dropout_prob = dropout_prob
         self.verbose = verbose
         self.loss_function = loss_function
-        self.last_activation_function = last_activation_function
         self.batch_normalisation = batch_normalisation
         
         self.gpu = gpu
@@ -155,7 +152,6 @@ class DNN_const_pt:
                                         self.dropout_prob, 
                                         self.input_size, 
                                         self.output_size,
-                                        self.last_activation_function,
                                         self.batch_normalisation)
 
         if initial_model is not None:
@@ -246,7 +242,6 @@ class DNN_shrink_pt:
                  gpu = False,
                  gpu_id = 0,
                  loss_function='MSE',
-                 last_activation_function = 'relu',
                  **kwargs):
 
         self.n_hidden_layers = n_hidden_layers
@@ -260,7 +255,6 @@ class DNN_shrink_pt:
         self.dropout_prob = dropout_prob
         self.verbose = verbose
         self.loss_function = loss_function
-        self.last_activation_function = last_activation_function
         self.batch_normalisation = batch_normalisation
         
         self.gpu = gpu
@@ -292,7 +286,6 @@ class DNN_shrink_pt:
                                         self.dropout_prob, 
                                         self.input_size, 
                                         self.output_size,
-                                        self.last_activation_function,
                                         self.batch_normalisation)
         
         if initial_model is not None:
