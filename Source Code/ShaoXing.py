@@ -742,8 +742,7 @@ class ShaoXing:
         """ Export analysis data """
 
         if self.regular_stats_df is None or self.CV_stats_df is None:
-            print('regular_stats_df or CV_stats_df not found, please run .get_analysis()')
-            return
+            raise AttributeError('regular_stats_df or CV_stats_df not found, please run .get_analysis()')
 
         address_split = address.split('.csv')[0]
         self.regular_stats_df.to_csv(f'{address_split}_regular.csv')
