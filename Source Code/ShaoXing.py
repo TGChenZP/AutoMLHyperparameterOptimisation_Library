@@ -764,7 +764,7 @@ class ShaoXing:
             
         
         if data_type not in ('Train', 'Val', 'Test'):
-            raise AttributeError('Input data type must either be "Train", "Val" or "Test"')
+            raise ValueError('Input data type must either be "Train", "Val" or "Test"')
             
         
         if self.RESIDUAL_PLOT_OBJECTS['Train'] is None:
