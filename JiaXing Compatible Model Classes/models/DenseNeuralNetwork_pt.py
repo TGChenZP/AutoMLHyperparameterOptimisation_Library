@@ -56,7 +56,8 @@ class DenseNeuralNetwork(nn.Module):
         
         for i in range(n_hidden_layers-1):
             self.nn_layers.append(nn.Linear(hidden_layer_n_neurons[i], hidden_layer_n_neurons[i+1]))
-            self.batch_norm_layers.append(nn.BatchNorm1d(hidden_layer_n_neurons[i + 1]))
+            if self.batch_normalisation:
+                self.batch_norm_layers.append(nn.BatchNorm1d(hidden_layer_n_neurons[i + 1]))
             self.activation_layer.append(self.ACTIVATION_FUNCTIONS_MAP[activation_function])
             self.dropout_layer.append(nn.Dropout(dropout_prob))
 
