@@ -191,6 +191,8 @@ class DNN_const_pt:
 
                 # Lasso regularization
                 l1_regularization = torch.tensor(0.)
+                if self.gpu:
+                    l1_regularization = l1_regularization.cuda(self.gpu_id)
                 for param in self.model.parameters():
                     l1_regularization += torch.norm(param, p=1)
                 loss += self.lambda_lasso * l1_regularization
@@ -325,6 +327,8 @@ class DNN_shrink_pt:
 
                 # Lasso regularization
                 l1_regularization = torch.tensor(0.)
+                if self.gpu:
+                    l1_regularization = l1_regularization.cuda(self.gpu_id)
                 for param in self.model.parameters():
                     l1_regularization += torch.norm(param, p=1)
                 loss += self.lambda_lasso * l1_regularization
