@@ -180,6 +180,8 @@ class DNN_const_pt:
 
             instances_learnt_so_far = 0
 
+            total_loss = 0
+
             for batch_idx, (batch_train_x, batch_train_y) in enumerate(train_loader):
                 
                 if self.gpu:
@@ -197,6 +199,8 @@ class DNN_const_pt:
                     l1_regularization += torch.norm(param, p=1)
                 loss += self.lambda_lasso * l1_regularization
 
+                total_loss += loss.item()*self.batch_size
+
                 # Backward and optimize
                 optimizer.zero_grad()
                 loss.backward()
@@ -210,7 +214,9 @@ class DNN_const_pt:
             # Print the progress
             if self.verbose:
                 if (epoch + 1) % 100 == 0:
-                    print(f'Epoch [{epoch+1}/{self.num_epochs}], Loss: {loss.item():.4f}')
+                    print(f'Epoch [{epoch+1}/{self.num_epochs}], Loss: {total_loss/instances_learnt_so_far:.4f}')
+
+
 
     def predict(self, x):
 
@@ -221,6 +227,9 @@ class DNN_const_pt:
 
         with torch.no_grad():
             predictions = self.model(x_tensor, training=False)
+        
+        if self.gpu:
+            predictions = predictions.cpu()
 
         return predictions
 
@@ -316,6 +325,8 @@ class DNN_shrink_pt:
 
             instances_learnt_so_far = 0
 
+            total_loss = 0
+
             for batch_idx, (batch_train_x, batch_train_y) in enumerate(train_loader):
                 
                 if self.gpu:
@@ -333,6 +344,8 @@ class DNN_shrink_pt:
                     l1_regularization += torch.norm(param, p=1)
                 loss += self.lambda_lasso * l1_regularization
 
+                total_loss += loss.item()*self.batch_size
+
                 # Backward and optimize
                 optimizer.zero_grad()
                 loss.backward()
@@ -346,7 +359,9 @@ class DNN_shrink_pt:
             # Print the progress
             if self.verbose:
                 if (epoch + 1) % 100 == 0:
-                    print(f'Epoch [{epoch+1}/{self.num_epochs}], Loss: {loss.item():.4f}')
+                    print(f'Epoch [{epoch+1}/{self.num_epochs}], Loss: {total_loss/instances_learnt_so_far:.4f}')
+
+                
 
     def predict(self, x):
 
@@ -357,5 +372,8 @@ class DNN_shrink_pt:
 
         with torch.no_grad():
             predictions = self.model(x_tensor, training=False)
+          
+        if self.gpu:
+            predictions = predictions.cpu()
 
         return predictions
