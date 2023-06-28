@@ -28,7 +28,7 @@ class Ensemble_ExplainableBoostingRegressor:
                  **kwargs):
         
         self.max_bins = max_bins
-        self.max_interaction_bins
+        self.max_interaction_bins = max_interaction_bins
         self.min_sample_leaf = min_sample_leaf
         self.interactions = interactions
         self.max_leaves = max_leaves
@@ -635,13 +635,12 @@ class Ensemble_HistGradientBoostingRegressor:
             
             sampled_train_x, sampled_train_y, sampled_dev_x, sampled_dev_y, used_columns = self._sample_data_and_columns(train_x, train_y, i)
 
-            hgbr = HistGradientBoostingRegressor(n_estimators=self.n_estimators,
-                                                                 max_depth=self.max_depth,
-                                                                 subsample=self.subsample,
-                                                                 max_features=self.max_features,
-                                                                 ccp_alpha=self.ccp_alpha,
-                                                                 learning_rate=self.learning_rate,
-                                                                 random_state=self.random_state)
+            hgbr = HistGradientBoostingRegressor(HistGradientBoostingRegressor(max_depth = self.max_depth,
+                                            max_bins = self.max_bins,
+                                            interaction_cst = self.interaction_cst,
+                                            learning_rate = self.learning_rate,
+                                            l2_regularisation = self.l2_regularisation,
+                                            random_state = self.random_state))
             
             hgbr.fit(sampled_dev_x, sampled_dev_y)
 

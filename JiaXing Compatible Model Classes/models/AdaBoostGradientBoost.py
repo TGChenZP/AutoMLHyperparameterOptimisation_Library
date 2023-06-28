@@ -30,7 +30,7 @@ class ADABoost_ExplainableBoostingRegressor:
         self.ada_learning_rate = ada_learning_rate
 
         self.max_bins = max_bins
-        self.max_interaction_bins
+        self.max_interaction_bins = max_interaction_bins
         self.min_sample_leaf = min_sample_leaf
         self.interactions = interactions
         self.max_leaves = max_leaves
@@ -319,13 +319,12 @@ class ADABoost_HistGradientBoostingRegressor:
 
     def fit(self, train_x, train_y):
 
-        self.model = AdaBoostRegressor(estimator = HistGradientBoostingRegressor(n_estimators=self.n_estimators,
-                                                                 max_depth=self.max_depth,
-                                                                 subsample=self.subsample,
-                                                                 max_features=self.max_features,
-                                                                 ccp_alpha=self.ccp_alpha,
-                                                                 learning_rate=self.learning_rate,
-                                                                 random_state=self.random_state), 
+        self.model = AdaBoostRegressor(estimator = HistGradientBoostingRegressor(max_depth = self.max_depth,
+                                            max_bins = self.max_bins,
+                                            interaction_cst = self.interaction_cst,
+                                            learning_rate = self.learning_rate,
+                                            l2_regularisation = self.l2_regularisation,
+                                            random_state=self.random_state), 
                                        n_estimators = self.ada_n_estimators, 
                                        learning_rate = self.ada_learning_rate,
                                        random_state=self.random_state)
