@@ -12,7 +12,7 @@ class Ensemble_ExplainableBoostingRegressor:
 
     def __init__(self,
                  max_bins,
-                 min_sample_leaf,
+                 min_samples_leaf,
                  interactions,
                  max_leaves,
                  learning_rate,
@@ -27,7 +27,7 @@ class Ensemble_ExplainableBoostingRegressor:
 
         self.max_bins = max_bins
         self.max_interaction_bins = max_interaction_bins
-        self.min_sample_leaf = min_sample_leaf
+        self.min_samples_leaf = min_samples_leaf
         self.interactions = interactions
         self.max_leaves = max_leaves
         self.learning_rate = learning_rate
@@ -61,7 +61,7 @@ class Ensemble_ExplainableBoostingRegressor:
                 train_x, train_y, i)
 
             ebr = ExplainableBoostingRegressor(max_bins=self.max_bins,
-                                               min_sample_leaf=self.min_sample_leaf,
+                                               min_samples_leaf=self.min_samples_leaf,
                                                interactions=self.interactions,
                                                max_leaves=self.max_leaves,
                                                learning_rate=self.learning_rate,
