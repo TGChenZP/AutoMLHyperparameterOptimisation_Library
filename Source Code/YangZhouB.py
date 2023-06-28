@@ -1069,7 +1069,10 @@ class YangZhouB:
                         combo.append(index_n_feature_combo_map[tuple(self._str_to_list(row[1]['features']))])
                         
                     else:
-                        combo.append(self._parameter_value_map_index[hyperparam][row[1][hyperparam]])
+                        if type(self.parameter_choices[hyperparam][0]) is bool:
+                            combo.append(self._parameter_value_map_index[hyperparam][bool(row[1][hyperparam])])
+                        else:
+                            combo.append(self._parameter_value_map_index[hyperparam][row[1][hyperparam]])
 
                 combo = tuple(combo)
                 
