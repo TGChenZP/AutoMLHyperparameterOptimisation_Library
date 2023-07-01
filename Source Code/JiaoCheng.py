@@ -402,61 +402,9 @@ class JiaoCheng:
 
         print('% Combos Checked:', int(sum(self.checked.reshape((np.prod(self.n_items))))), 'out of', np.prod(self.n_items), 'which is', f'{np.mean(self.checked).round(8)*100}%')
             
-        
+    
 
-
-    def _train_and_test_combo(self, combo):
-        """ Helper to train and test each combination as part of tune() """
-
-        combo = tuple(combo)
-        
-        params = {self.hyperparameters[i]:self.parameter_choices[self.hyperparameters[i]][combo[i]] for i in range(len(self.hyperparameters))}
-        
-        
-        if self._tune_features == True:
-            del params['features']
-            tmp_train_x = self.train_x[list(self._feature_combo_n_index_map[combo[-1]])] 
-            tmp_val_x = self.val_x[list(self._feature_combo_n_index_map[combo[-1]])]
-            tmp_test_x = self.test_x[list(self._feature_combo_n_index_map[combo[-1]])]
-
-            # add non tuneable parameters
-            for nthp in self.non_tuneable_parameter_choices:
-                params[nthp] = self.non_tuneable_parameter_choices[nthp]
-
-            # initialise object
-            clf = self.model(**params)
-
-            params['features'] = [list(self._feature_combo_n_index_map[combo[-1]])] 
-            params['feature combo ningxiang score'] = self.feature_n_ningxiang_score_dict[self._feature_combo_n_index_map[combo[-1]]]
-
-        else:
-            tmp_train_x = self.train_x
-            tmp_val_x = self.val_x
-            tmp_test_x = self.test_x
-
-            # add non tuneable parameters
-            for nthp in self.non_tuneable_parameter_choices:
-                params[nthp] = self.non_tuneable_parameter_choices[nthp]
-
-            # initialise object
-            clf = self.model(**params)
-
-        # get time and fit
-        start = time.time()
-        clf.fit(tmp_train_x, self.train_y)
-        end = time.time()
-
-        # get predicted labels/values for three datasets
-        train_pred = clf.predict(tmp_train_x)
-        val_pred = clf.predict(tmp_val_x)
-        test_pred = clf.predict(tmp_test_x)
-
-        # get scores and time used
-        time_used = end-start
-
-        # build output dictionary and save result
-        df_building_dict = params
-
+    def _eval_combo(self, df_building_dict):
 
         if self.clf_type == 'Regression':
 
@@ -601,9 +549,66 @@ class JiaoCheng:
             df_building_dict['Val recall'] = [np.round(val_recall, 6)]
             df_building_dict['Test recall'] = [np.round(test_recall, 6)]
 
+        return df_building_dict
+    
+
+
+    def _train_and_test_combo(self, combo):
+        """ Helper to train and test each combination as part of tune() """
+
+        combo = tuple(combo)
+        
+        params = {self.hyperparameters[i]:self.parameter_choices[self.hyperparameters[i]][combo[i]] for i in range(len(self.hyperparameters))}
+        
+        
+        if self._tune_features == True:
+            del params['features']
+            tmp_train_x = self.train_x[list(self._feature_combo_n_index_map[combo[-1]])] 
+            tmp_val_x = self.val_x[list(self._feature_combo_n_index_map[combo[-1]])]
+            tmp_test_x = self.test_x[list(self._feature_combo_n_index_map[combo[-1]])]
+
+            # add non tuneable parameters
+            for nthp in self.non_tuneable_parameter_choices:
+                params[nthp] = self.non_tuneable_parameter_choices[nthp]
+
+            # initialise object
+            clf = self.model(**params)
+
+            params['features'] = [list(self._feature_combo_n_index_map[combo[-1]])] 
+            params['feature combo ningxiang score'] = self.feature_n_ningxiang_score_dict[self._feature_combo_n_index_map[combo[-1]]]
+
+        else:
+            tmp_train_x = self.train_x
+            tmp_val_x = self.val_x
+            tmp_test_x = self.test_x
+
+            # add non tuneable parameters
+            for nthp in self.non_tuneable_parameter_choices:
+                params[nthp] = self.non_tuneable_parameter_choices[nthp]
+
+            # initialise object
+            clf = self.model(**params)
+
+        # get time and fit
+        start = time.time()
+        clf.fit(tmp_train_x, self.train_y)
+        end = time.time()
+
+        # get predicted labels/values for three datasets
+        train_pred = clf.predict(tmp_train_x)
+        val_pred = clf.predict(tmp_val_x)
+        test_pred = clf.predict(tmp_test_x)
+
+        # get scores and time used
+        time_used = end-start
+
+        # build output dictionary and save result
+        df_building_dict = params
+
+        # get evaluation statistics
+        df_building_dict = self._eval_combo(df_building_dict)
 
         df_building_dict['Time'] = [np.round(time_used, 2)]
-
 
         tmp = pd.DataFrame(df_building_dict)
 
