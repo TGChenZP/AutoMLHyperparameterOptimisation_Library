@@ -128,6 +128,10 @@ class NingXiang:
                     step = 0
                     
                     self.ningxiang_output[tuple(curr_combo)] = np.sqrt(best_score)
+            
+        if len(list(self.ningxiang_output.keys())[-1]) != len(self.train_x.columns):
+                    
+            self.ningxiang_output[tuple(curr_combo)] = np.sqrt(best_score)  
         
         return self.ningxiang_output
 
@@ -218,6 +222,10 @@ class NingXiang:
                     out[combo] = score
 
             i += 1
+        
+        if len(list(out.keys())[-1]) != len(features_reverse_sorted):
+                    
+            out[combo] = score
 
         return out
 
