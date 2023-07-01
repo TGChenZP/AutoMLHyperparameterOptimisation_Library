@@ -955,16 +955,7 @@ class GuangAn:
         # Display final information
         print("TUNING FINISHED\n")
 
-        print('Max Score: \n', self.best_score)
-        print('Max Combo Index: \n', self.best_combo)
-
-        final_combo = {self.hyperparameters[i]:self.best_combo[i] for i in range(len(self.hyperparameters))}
-        print('Max Combo Hyperparamer Combination: \n', final_combo)
-
-        if self._tune_features:
-            print('Max Combo Features: \n', self._feature_combo_n_index_map[self.best_combo[-1]])
-
-        print('# Combos Checked:', int(len(self.checked_dict)))
+        self.view_best_combo_and_score()
 
 
 
@@ -1226,7 +1217,25 @@ class GuangAn:
     def view_best_combo_and_score(self):
         """ View best combination and its validation score """
         
-        print(f'(Current) Best combo: {self.best_combo} with val score {np.round(self.best_score, 4)}')
+        print('Max Score: \n', self.best_score)
+
+        if self.clf_type == 'Classification':
+            max_val_id = self.tuning_result['Val accu'].idmax()
+            print('Max Test Score: \n', self.tuning_result.iloc[max_val_id]['Test accu'])
+            
+        elif self.clf_type == 'Regression':
+            max_val_id = self.tuning_result['Val r2'].idmax()
+            print('Max Test Score: \n', self.tuning_result.iloc[max_val_id]['Test r2'])
+
+        print('Max Combo Index: \n', self.best_combo)
+
+        final_combo = {self.hyperparameters[i]:self.best_combo[i] for i in range(len(self.hyperparameters))}
+        print('Max Combo Hyperparamer Combination: \n', final_combo)
+
+        if self._tune_features:
+            print('Max Combo Features: \n', self._feature_combo_n_index_map[self.best_combo[-1]])
+
+        print('# Combos Checked:', int(len(self.checked_dict)))
 
     
 

@@ -529,16 +529,7 @@ class JiXi:
                 self._check_already_trained_best_score(combo)
 
         # Display final information
-        print('Max Score: \n', self.best_score)
-        print('Max Combo Index: \n', self.best_combo, 'out of', self.n_items, '(note best combo is 0-indexed)')
-
-        final_combo = {self.hyperparameters[i]:self.parameter_choices[self.hyperparameters[i]][self.best_combo[i]] for i in range(len(self.hyperparameters))}
-        print('Max Combo Hyperparamer Combination: \n', final_combo)
-
-        if self._tune_features:
-            print('Max Combo Features: \n', self._feature_combo_n_index_map[self.best_combo[-1]])
-
-        print('% Combos Checked:', int(sum(self.checked.reshape((np.prod(self.n_items))))), 'out of', np.prod(self.n_items), 'which is', f'{np.mean(self.checked).round(8)*100}%')
+        self.view_best_combo_and_score()
 
 
 
@@ -588,10 +579,7 @@ class JiXi:
         # Display final information
         print(f"PARALLEL TUNING PART {part} FINISHED\n")
 
-        print('Max Score: \n', self.best_score)
-        print('Max Combo: \n', self.best_combo)
-
-        print('% Combos Checked:', int(sum(self.checked.reshape((np.prod(self.n_items))))), 'out of', np.prod(self.n_items), 'which is', f'{np.mean(self.checked).round(8)*100}%')
+        self.view_best_combo_and_score()
 
 
 
@@ -856,7 +844,25 @@ class JiXi:
     def view_best_combo_and_score(self):
         """ View best combination and its validation score """
         
-        print(f'(Current) Best combo: {self.best_combo} with val score {self.best_score}')
+        print('Max Score: \n', self.best_score)
+
+        if self.clf_type == 'Classification':
+            max_val_id = self.tuning_result['Val accu'].idmax()
+            print('Max Test Score: \n', self.tuning_result.iloc[max_val_id]['Test accu'])
+            
+        elif self.clf_type == 'Regression':
+            max_val_id = self.tuning_result['Val r2'].idmax()
+            print('Max Test Score: \n', self.tuning_result.iloc[max_val_id]['Test r2'])
+
+        print('Max Combo Index: \n', self.best_combo, 'out of', self.num_hyperparameters, '(note best combo is 0-indexed)')
+
+        final_combo = {self.hyperparameters[i]:self.parameter_choices[self.hyperparameters[i]][self.best_combo[i]] for i in range(len(self.hyperparameters))}
+        print('Max Combo Hyperparamer Combination: \n', final_combo)
+
+        if self._tune_features:
+            print('Max Combo Features: \n', self._feature_combo_n_index_map[self.best_combo[-1]])
+
+        print('% Combos Checked:', int(sum(self.checked.reshape((np.prod(self.n_items))))), 'out of', np.prod(self.n_items), 'which is', f'{np.mean(self.checked).round(8)*100}%')
 
     
 
