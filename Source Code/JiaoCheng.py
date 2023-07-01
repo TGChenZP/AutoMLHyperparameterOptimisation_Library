@@ -362,7 +362,7 @@ class JiaoCheng:
             last_round_starting_hp_combo = copy.deepcopy(starting_hp_combo)
 
             for hp in self.hyperparameter_tuning_order: # tune each hp in order
-                print('\nHyperparameter:', hp, f'(index: {self._tuning_order_map_hp[hp]})', '\n')
+                print("\nRound", round, '\nHyperparameter:', hp, f'(index: {self._tuning_order_map_hp[hp]})', '\n')
 
                 last_hyperparameter_best_hp_combo = copy.deepcopy(starting_hp_combo) # store last iteration's best combo
 
@@ -382,9 +382,9 @@ class JiaoCheng:
                 starting_hp_combo = copy.deepcopy(self.best_combo) # take the best combo after this hyperparameter has been tuned
                 
                 if starting_hp_combo == last_hyperparameter_best_hp_combo:
-                    print('\nBest combo after this round:', starting_hp_combo, ', NOT UPDATED SINCE LAST HYPERPARAMETER\n')
+                    print('\nBest combo after this hyperparameter:', starting_hp_combo, ', NOT UPDATED SINCE LAST HYPERPARAMETER\n')
                 else:
-                    print('\nBest combo after this round:', starting_hp_combo, ', UPDATED SINCE LAST HYPERPARAMETER\n')
+                    print('\nBest combo after this hyperparameter:', starting_hp_combo, ', UPDATED SINCE LAST HYPERPARAMETER\n')
             
             if starting_hp_combo == last_round_starting_hp_combo: # if after this full round best combo hasn't moved, then can terminate
                 continue_tuning = 0
