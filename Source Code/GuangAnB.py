@@ -682,7 +682,7 @@ class GuangAnB:
         # start by putting original bounds into a list; this list is the object that will control whether algorithm has terminated
         bounds_list = [self.original_bounds]
 
-        while bounds_list: # gets reset every time, so algo will keep running if there are bounds to operate on
+        while bounds_list: # get reset every iteration, so algo will keep running if there are bounds to operate on
             print("Round:", self._round)
 
             curr_round_best_score = self.best_score
@@ -815,7 +815,7 @@ class GuangAnB:
 
         run_through = True
 
-        while cruise_bounds: # gets reset every time, so algo will keep running if there are bounds to operate on
+        while cruise_bounds: # gets reset every iteration, so algo will keep running if there are bounds to operate on
             print('Cruise Round')
             if run_through == True:
                 old_max_bounds = cruise_bounds[0]
