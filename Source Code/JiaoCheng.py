@@ -404,7 +404,7 @@ class JiaoCheng:
             
     
 
-    def _eval_combo(self, df_building_dict):
+    def _eval_combo(self, df_building_dict, train_pred, val_pred, test_pred):
 
         if self.clf_type == 'Regression':
 
@@ -549,7 +549,7 @@ class JiaoCheng:
             df_building_dict['Val recall'] = [np.round(val_recall, 6)]
             df_building_dict['Test recall'] = [np.round(test_recall, 6)]
 
-        return df_building_dict
+        return df_building_dict, val_score, test_score
     
 
 
@@ -606,7 +606,7 @@ class JiaoCheng:
         df_building_dict = params
 
         # get evaluation statistics
-        df_building_dict = self._eval_combo(df_building_dict)
+        df_building_dict, val_score, test_score = self._eval_combo(df_building_dict, train_pred, val_pred, test_pred)
 
         df_building_dict['Time'] = [np.round(time_used, 2)]
 
