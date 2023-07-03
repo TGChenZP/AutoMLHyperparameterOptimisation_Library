@@ -847,11 +847,11 @@ class JiXi:
         print('Max Score: \n', self.best_score)
 
         if self.clf_type == 'Classification':
-            max_val_id = self.tuning_result['Val accu'].idmax()
+            max_val_id = self.tuning_result['Val accu'].idxmax()
             print('Max Test Score: \n', self.tuning_result.iloc[max_val_id]['Test accu'])
             
         elif self.clf_type == 'Regression':
-            max_val_id = self.tuning_result['Val r2'].idmax()
+            max_val_id = self.tuning_result['Val r2'].idxmax()
             print('Max Test Score: \n', self.tuning_result.iloc[max_val_id]['Test r2'])
 
         print('Max Combo Index: \n', self.best_combo, 'out of', self.num_hyperparameters, '(note best combo is 0-indexed)')
