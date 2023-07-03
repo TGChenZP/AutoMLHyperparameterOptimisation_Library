@@ -1031,7 +1031,7 @@ class YangZhouB:
             max_val_id = self.tuning_result['Val r2'].idxmax()
             print('Max Test Score: \n', self.tuning_result.iloc[max_val_id]['Test r2'])
 
-        print('Max Combo Index: \n', self.best_combo, 'out of', self.num_hyperparameters, '(note best combo is 0-indexed)')
+        print('Max Combo Index: \n', self.best_combo, 'out of', self.n_items, '(note best combo is 0-indexed)')
 
         final_combo = {self.hyperparameters[i]:self.parameter_choices[self.hyperparameters[i]][self.best_combo[i]] for i in range(len(self.hyperparameters))}
         print('Max Combo Hyperparamer Combination: \n', final_combo)
