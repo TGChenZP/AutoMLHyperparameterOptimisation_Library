@@ -1,4 +1,4 @@
-# 03/07/2023
+# 05/07/2023
 
 
 
@@ -881,7 +881,7 @@ class JiXi:
 
         self._up_to = 0
 
-        self._create__parameter_value_map_index()
+        self._create_parameter_value_map_index()
 
         # read DataFrame data into internal governing DataFrames of JiaoCheng
         for row in self.tuning_result.iterrows():
@@ -932,7 +932,7 @@ class JiXi:
 
 
     
-    def _create__parameter_value_map_index(self):
+    def _create_parameter_value_map_index(self):
         """ Helper to create parameter-value index map """
 
         self._parameter_value_map_index = dict()
