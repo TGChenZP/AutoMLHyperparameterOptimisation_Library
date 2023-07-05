@@ -1248,21 +1248,21 @@ class YangZhou:
     def read_in_tuning_result_df(self, address): 
         """ Read in tuning result csv and read data into checked and result arrays """
 
+        BOOL_MAP = {'1': True, '0': False, '1.0': True, '0.0': False, True: True, False: False, 'True': True, 'False': False, 1: True, 0: False, 1.0: True, 0.0: False}
+
         if self.parameter_choices is None:
-            raise AttributeError("Missing parameter_choices to build parameter_value_map_index, please run set_hyperparameters() first")
-            
-        
+            raise AttributeError("Missing parameter_choices to build _parameter_value_map_index, please run set_hyperparameters() first")
+
         if self.clf_type is None:
             raise AttributeError('Missing clf_type. Please run .read_in_model() first.')
-            
 
         self.tuning_result = pd.read_csv(address)
 
         self._up_to = 0
 
-        self._create_parameter_value_map_index()
+        self._create__parameter_value_map_index()
 
-        # read DataFrame data into internal governing DataFrames of YangZhou
+        # read DataFrame data into internal governing DataFrames of JiaoCheng
         for row in self.tuning_result.iterrows():
 
             try:
@@ -1279,7 +1279,7 @@ class YangZhou:
                         
                     else:
                         if type(self.parameter_choices[hyperparam][0]) is bool:
-                            combo.append(self._parameter_value_map_index[hyperparam][bool(row[1][hyperparam])])
+                            combo.append(self._parameter_value_map_index[hyperparam][BOOL_MAP(row[1][hyperparam])])
                         else:
                             combo.append(self._parameter_value_map_index[hyperparam][row[1][hyperparam]])
 
@@ -1295,7 +1295,7 @@ class YangZhou:
             except Exception as e:
                 print(f"Error message: {str(e)}")
                 print('Error Importing this Row:', row)
-        
+
         print(f"Successfully read in tuning result of {len(self.tuning_result)} rows")
 
 

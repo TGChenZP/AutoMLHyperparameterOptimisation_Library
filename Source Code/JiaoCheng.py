@@ -356,7 +356,6 @@ class JiaoCheng:
         continue_tuning = 1 # continuously loop through features until converge (combo stays same after a full round)
         while continue_tuning:
             print("\nROUND", round)
-            round += 1
 
             # first store previous round's best combo/the starting combo before each round; for comparison at the end
             last_round_starting_hp_combo = copy.deepcopy(starting_hp_combo)
@@ -385,6 +384,8 @@ class JiaoCheng:
                     print('\nBest combo after this hyperparameter:', starting_hp_combo, ', NOT UPDATED SINCE LAST HYPERPARAMETER\n')
                 else:
                     print('\nBest combo after this hyperparameter:', starting_hp_combo, ', UPDATED SINCE LAST HYPERPARAMETER\n')
+            
+            round += 1
             
             if starting_hp_combo == last_round_starting_hp_combo: # if after this full round best combo hasn't moved, then can terminate
                 continue_tuning = 0
@@ -680,6 +681,8 @@ class JiaoCheng:
     def read_in_tuning_result_df(self, address): 
         """ Read in tuning result csv and read data into checked and result arrays """
 
+        BOOL_MAP = {'1': True, '0': False, '1.0': True, '0.0': False, True: True, False: False, 'True': True, 'False': False, 1: True, 0: False, 1.0: True, 0.0: False}
+
         if self.parameter_choices is None:
             raise AttributeError("Missing parameter_choices to build _parameter_value_map_index, please run set_hyperparameters() first")
 
@@ -709,7 +712,7 @@ class JiaoCheng:
                         
                     else:
                         if type(self.parameter_choices[hyperparam][0]) is bool:
-                            combo.append(self._parameter_value_map_index[hyperparam][bool(row[1][hyperparam])])
+                            combo.append(self._parameter_value_map_index[hyperparam][BOOL_MAP(row[1][hyperparam])])
                         else:
                             combo.append(self._parameter_value_map_index[hyperparam][row[1][hyperparam]])
 
