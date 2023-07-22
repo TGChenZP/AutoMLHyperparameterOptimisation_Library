@@ -51,11 +51,11 @@ class NingXiang:
         self.train_y = train_y
         print("Read in Train y data")
 
-        if val_x:
+        if val_x is not None:
             self.val_x = val_x
             print("Read in Val X data")
         
-        if val_y:
+        if val_y is not None:
             self.val_y = val_y
             print("Read in Val y data")
 
@@ -137,7 +137,7 @@ class NingXiang:
 
     
 
-    def get_rf_based_feature_combinations(self, min_features = 0, gap = 1):
+    def get_rf_based_feature_combinations(self, min_features = 0, gap = 1, n_jobs = 1):
         """ Gets NingXiang scores based on RF feature importance """
         
         if self.clf_type == None:
@@ -151,15 +151,15 @@ class NingXiang:
 
         # Initialise the Random Forest objects
         if self.clf_type == 'Regression':
-            self.rf = RandomForestRegressor(n_estimators = 100, max_depth = 12, max_features = 0.75, random_state = self._seed, ccp_alpha = 0, max_samples = 0.75)
+            self.rf = RandomForestRegressor(n_estimators = 100, max_depth = 12, max_features = 0.75, random_state = self._seed, ccp_alpha = 0, max_samples = 0.75, n_jobs = n_jobs)
         elif self.clf_type == 'Classification':
-            self.rf = RandomForestClassifier(n_estimators = 100, max_depth = 12, max_features = 0.75, random_state = self._seed, ccp_alpha = 0, max_samples = 0.75)
+            self.rf = RandomForestClassifier(n_estimators = 100, max_depth = 12, max_features = 0.75, random_state = self._seed, ccp_alpha = 0, max_samples = 0.75, n_jobs = n_jobs)
         
         print('Begin fitting Random Forest')
         # fit the model and get the feature importances
         self.rf.fit(self.train_x, self.train_y)
         print('Finished fitting Random Forest')
-        self.feature_importance = {self.train_x.columns[i]:rf.feature_importances_[i] for i in range(len(self.train_x.columns))}
+        self.feature_importance = {self.train_x.columns[i]:self.rf.feature_importances_[i] for i in range(len(self.train_x.columns))}
 
         # use handle (which can be used on its own) to generate the ningxiang output
         self.ningxiang_output = self.get_rf_based_feature_combinations_from_feature_importance(self.feature_importance, min_features, gap)
