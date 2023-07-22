@@ -238,10 +238,10 @@ class NingXiang:
             raise AttributeError('Please run .show_rf_stats()')
         
 
-        self.display(self.feature_importance)
+        print(self.feature_importance)
 
-        if self.val_X and self.val_y:
-            print("Validation score:", self.rf.score(self.val_X, self.val_y))
+        if self.val_x is not None and self.val_y is not None:
+            print("Validation score:", self.rf.score(self.val_x, self.val_y))
 
 
 
