@@ -606,6 +606,7 @@ class JiaoCheng:
 
 
         self.tuning_result = pd.concat([self.tuning_result, tmp])
+        self.tuning_result.index = range(len(self.tuning_result))
         self._save_tuning_result()
 
         # update best score stats
