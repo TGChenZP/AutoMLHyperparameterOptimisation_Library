@@ -95,7 +95,6 @@ class DNN_const_pt:
                  n_hidden_layers, 
                  activation, 
                  lambda_lasso, 
-                 epoch_batch_size, 
                  batch_size,
                  learning_rate, 
                  num_epochs, 
@@ -114,7 +113,6 @@ class DNN_const_pt:
         self.lambda_lasso = lambda_lasso
         self.learning_rate = learning_rate
         self.num_epochs = num_epochs
-        self.epoch_batch_size = epoch_batch_size
         self.batch_size = batch_size
         self.random_state = random_state
         self.hidden_layer_n_neuron = hidden_layer_n_neuron
@@ -178,7 +176,7 @@ class DNN_const_pt:
             
             train_loader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True, worker_init_fn=lambda _: torch.manual_seed(self.seeds[epoch]))
 
-            instances_learnt_so_far = 0
+            n_instance_observed = 0
 
             total_loss = 0
 
@@ -199,22 +197,19 @@ class DNN_const_pt:
                     l1_regularization += torch.norm(param, p=1)
                 loss += self.lambda_lasso * l1_regularization
 
-                total_loss += loss.item()*self.batch_size
+                total_loss += loss.item()*len(batch_train_x)
+
+                n_instance_observed += len(batch_train_x)
 
                 # Backward and optimize
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
-
-                instances_learnt_so_far += self.batch_size
-                
-                if instances_learnt_so_far >= self.epoch_batch_size:
-                    break
         
             # Print the progress
             if self.verbose:
                 if (epoch + 1) % 100 == 0:
-                    print(f'Epoch [{epoch+1}/{self.num_epochs}], Loss: {total_loss/instances_learnt_so_far:.4f}')
+                    print(f'Epoch [{epoch+1}/{self.num_epochs}], Loss: {total_loss/n_instance_observed:.4f}')
 
 
 
@@ -243,7 +238,6 @@ class DNN_shrink_pt:
                  n_hidden_layers, 
                  activation, 
                  lambda_lasso, 
-                 epoch_batch_size, 
                  batch_size,
                  learning_rate, 
                  num_epochs, 
@@ -261,7 +255,6 @@ class DNN_shrink_pt:
         self.lambda_lasso = lambda_lasso
         self.learning_rate = learning_rate
         self.num_epochs = num_epochs
-        self.epoch_batch_size = epoch_batch_size
         self.batch_size = batch_size
         self.random_state = random_state
         self.dropout_prob = dropout_prob
@@ -323,7 +316,7 @@ class DNN_shrink_pt:
             
             train_loader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True, worker_init_fn=lambda _: torch.manual_seed(self.seeds[epoch]))
 
-            instances_learnt_so_far = 0
+            n_instance_observed = 0
 
             total_loss = 0
 
@@ -344,22 +337,19 @@ class DNN_shrink_pt:
                     l1_regularization += torch.norm(param, p=1)
                 loss += self.lambda_lasso * l1_regularization
 
-                total_loss += loss.item()*self.batch_size
+                total_loss += loss.item()*len(batch_train_x)
+
+                n_instance_observed += len(batch_train_x)
 
                 # Backward and optimize
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
-
-                instances_learnt_so_far += self.batch_size
-                
-                if instances_learnt_so_far >= self.epoch_batch_size:
-                    break
         
             # Print the progress
             if self.verbose:
                 if (epoch + 1) % 100 == 0:
-                    print(f'Epoch [{epoch+1}/{self.num_epochs}], Loss: {total_loss/instances_learnt_so_far:.4f}')
+                    print(f'Epoch [{epoch+1}/{self.num_epochs}], Loss: {total_loss/n_instance_observed:.4f}')
 
                 
 
