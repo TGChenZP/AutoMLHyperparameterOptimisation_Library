@@ -91,6 +91,7 @@ class NingXiang:
 
         curr_combo = list()
         remaining_features = list(self.train_x.columns)
+        first_time_past = True
         step = 0
         for i in range(len(remaining_features)):
             print(f'Up to {i+1}th variable')
@@ -120,6 +121,12 @@ class NingXiang:
             print(f'Best score: {np.sqrt(best_score)}\n')
             
             if i >= min_features:
+
+                if first_time_past:
+                    self.ningxiang_output[tuple(curr_combo)] = np.sqrt(best_score)
+                    first_time_past = False
+
+                    
                 # store in ningxiang output
                 step += 1
 
@@ -203,6 +210,7 @@ class NingXiang:
         feature_combo = list()
         score = 0
 
+        first_time_past = True
         i = 0
         step = 0
         # Continuously add feature and its score
@@ -214,6 +222,10 @@ class NingXiang:
 
             if i >= min_features: # check gone past min features
                 
+                if first_time_past:
+                    out[combo] = score
+                    first_time_past = False
+
                 step += 1
 
                 if step % gap == 0: # only add every gap-th combo
