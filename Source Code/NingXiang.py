@@ -119,7 +119,7 @@ class NingXiang:
             print(f'Current combination: {curr_combo}')
             print(f'Best score: {np.sqrt(best_score)}\n')
             
-            if i+1 >= min_features:
+            if i >= min_features:
                 # store in ningxiang output
                 step += 1
 
@@ -212,7 +212,7 @@ class NingXiang:
 
             combo = tuple(feature_combo)
 
-            if i+1 >= min_features: # check gone past min features
+            if i >= min_features: # check gone past min features
                 
                 step += 1
 
