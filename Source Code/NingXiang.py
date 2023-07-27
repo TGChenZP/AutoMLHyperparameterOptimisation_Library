@@ -91,7 +91,6 @@ class NingXiang:
 
         curr_combo = list()
         remaining_features = list(self.train_x.columns)
-        first_time_past = True
         step = 0
         for i in range(len(remaining_features)):
             print(f'Up to {i+1}th variable')
@@ -120,21 +119,15 @@ class NingXiang:
             print(f'Current combination: {curr_combo}')
             print(f'Best score: {np.sqrt(best_score)}\n')
             
-            if i >= min_features:
-
-                if first_time_past:
-                    self.ningxiang_output[tuple(curr_combo)] = np.sqrt(best_score)
-                    first_time_past = False
-
                     
-                # store in ningxiang output
-                step += 1
+            # store in ningxiang output
+            step += 1
 
-                if step % gap == 0: # only add every gap-th combo
+            if step % gap == 0 and i+1 >= min_features: # only add every gap-th combo, provided it has surpassed the min features
 
-                    step = 0
-                    
-                    self.ningxiang_output[tuple(curr_combo)] = np.sqrt(best_score)
+                step = 0
+                
+                self.ningxiang_output[tuple(curr_combo)] = np.sqrt(best_score)
             
         if len(list(self.ningxiang_output.keys())[-1]) != len(self.train_x.columns):
                     
@@ -220,18 +213,12 @@ class NingXiang:
 
             combo = tuple(feature_combo)
 
-            if i >= min_features: # check gone past min features
-                
-                if first_time_past:
-                    out[combo] = score
-                    first_time_past = False
+            step += 1
 
-                step += 1
+            if step % gap == 0 and i+1 >= min_features: # only add every gap-th combo
 
-                if step % gap == 0: # only add every gap-th combo
-
-                    step = 0
-                    out[combo] = score
+                step = 0
+                out[combo] = score
 
             i += 1
         
