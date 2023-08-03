@@ -63,47 +63,47 @@ class DenseNeuralNetworkRegressor(nn.Module):
             return self.layer(x)
 
 
-        class residual_layer(nn.Module): ## only useable for constant
+    class residual_layer(nn.Module): ## only useable for constant
 
-            def __init__(self,
-                dimension,
-                dropout_prob,
-                batch_normalisation,
-                activation_function):
+        def __init__(self,
+            dimension,
+            dropout_prob,
+            batch_normalisation,
+            activation_function):
 
-                self.batch_normalisation = batch_normalisation
+            self.batch_normalisation = batch_normalisation
 
-                super().__init__()
+            super().__init__()
 
-                self.ACTIVATION_FUNCTIONS_MAP = {'relu': nn.ReLU(),
-                                            'sigmoid': nn.Sigmoid(),
-                                            'tanh': nn.Tanh(),
-                                            'softmax': nn.Softmax(dim=1)}
+            self.ACTIVATION_FUNCTIONS_MAP = {'relu': nn.ReLU(),
+                                        'sigmoid': nn.Sigmoid(),
+                                        'tanh': nn.Tanh(),
+                                        'softmax': nn.Softmax(dim=1)}
 
-                self.layer = nn.Sequential(
-                    nn.Linear(dimension, dimension),
-                    # TODO: batchnorm??
-                    self.ACTIVATION_FUNCTIONS_MAP[activation_function]
-                )
-                self.linear = nn.Linear(dimension, dimension),
+            self.layer = nn.Sequential(
+                nn.Linear(dimension, dimension),
+                # TODO: batchnorm??
+                self.ACTIVATION_FUNCTIONS_MAP[activation_function]
+            )
+            self.linear = nn.Linear(dimension, dimension),
 
-                if self.batch_normalisation:
-                    self.batchnorm = self.nn.BatchNorm1d(dimension)
+            if self.batch_normalisation:
+                self.batchnorm = self.nn.BatchNorm1d(dimension)
 
-                self.activation = self.ACTIVATION_FUNCTIONS_MAP[activation_function]
-                self.dropout = nn.Dropout(dropout_prob)
+            self.activation = self.ACTIVATION_FUNCTIONS_MAP[activation_function]
+            self.dropout = nn.Dropout(dropout_prob)
 
 
-            def forward(self, x):
-                y = self.layer(x)
-                y = self.linear(y)
+        def forward(self, x):
+            y = self.layer(x)
+            y = self.linear(y)
 
-                if self.batch_normalisation:
-                    y = self.batchnorm(y)
+            if self.batch_normalisation:
+                y = self.batchnorm(y)
 
-                y = self.activation(x+y)
+            y = self.activation(x+y)
 
-                return self.dropout(y)
+            return self.dropout(y)
 
 
     def __init__(self,
