@@ -182,6 +182,7 @@ class DNN_const_pt:
                  verbose = False,
                  loss_function='MSE',
                  data_loader = CustomDataLoader,
+                 grad_clip = False,
                  dense_layer_type = 'Dense',
                  **kwargs):
 
@@ -199,6 +200,7 @@ class DNN_const_pt:
         self.batch_normalisation = batch_normalisation
         self.data_loader = data_loader
         self.dense_layer_type = dense_layer_type
+        self.grad_clip = grad_clip
 
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -218,7 +220,10 @@ class DNN_const_pt:
         else:
             self.output_size = 1
 
-        self.input_size = train_x.shape[1]
+        if type(train_x) == pd.core.frame.DataFrame:
+            self.input_size = train_x.shape[1]
+        else:
+            self.input_size = train_x[0].shape[1]
 
 
         # Create the model
@@ -248,10 +253,12 @@ class DNN_const_pt:
 
         optimizer = optim.Adam(self.model.parameters(), lr=self.learning_rate)
 
+        torch.manual_seed(self.random_state)
+
         # Create the custom datasets
         train_dataset = self.data_loader(train_x, train_y)
 
-        train_loader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True, worker_init_fn=lambda _: torch.manual_seed(self.random_state))
+        train_loader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True)
 
         # Training loop
         for epoch in range(self.num_epochs):
@@ -284,6 +291,10 @@ class DNN_const_pt:
                 # Backward and optimize
                 optimizer.zero_grad()
                 loss.backward()
+
+                if self.grad_clip:
+                    nn.utils.clip_grad_norm_(self.model.parameters(), 1.0)
+
                 optimizer.step()
 
             # Print the progress
@@ -295,16 +306,47 @@ class DNN_const_pt:
 
     def predict(self, x):
 
+        # self.model.eval()
+
+        # x_tensor = torch.Tensor(x.values).to(self.device)
+
+
+        # with torch.no_grad():
+        #     predictions = self.model(x_tensor, training=False)
+
+        # predictions = predictions.cpu()
+
+        # return predictions
+    
         self.model.eval()
 
-        x_tensor = torch.Tensor(x.values).to(self.device)
+        predictions = []
+
+        predict_dataset = self.data_loader(x)
+
+        predict_loader = DataLoader(predict_dataset, batch_size=self.batch_size, shuffle=False)
 
         with torch.no_grad():
-            predictions = self.model(x_tensor, training=False)
 
-        predictions = predictions.cpu()
+            for batch_idx, batch_predict_x in enumerate(predict_loader):
+ 
+                batch_prediction = self.model(batch_predict_x, training=False).cpu()
+                batch_prediction_numpy = batch_prediction.numpy().flatten()
+                predictions.extend(batch_prediction_numpy)
 
         return predictions
+    
+
+
+    def save(self, address):
+        
+        torch.save(self.model.state_dict(), f'{address}.pt')
+    
+
+
+    def load(self, address):
+
+        self.model.load_state_dict(torch.load(f'{address}.pt'), map_location=self.device)
 
 
 
@@ -325,6 +367,7 @@ class DNN_shrink_pt:
                  verbose = False,
                  loss_function='MSE',
                  data_loader = CustomDataLoader,
+                 grad_clip = False,
                  **kwargs):
 
         self.n_hidden_layers = n_hidden_layers
@@ -339,6 +382,7 @@ class DNN_shrink_pt:
         self.loss_function = loss_function
         self.batch_normalisation = batch_normalisation
         self.data_loader = data_loader
+        self.grad_clip = grad_clip
 
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -355,7 +399,10 @@ class DNN_shrink_pt:
         else:
             self.output_size = 1
 
-        self.input_size = train_x.shape[1]
+        if type(train_x) == pd.core.frame.DataFrame:
+            self.input_size = train_x.shape[1]
+        else:
+            self.input_size = train_x[0].shape[1]
 
         gap = (self.input_size - self.output_size)//(self.n_hidden_layers+1)
         self.hidden_layer_sizes = [self.input_size - i * gap for i in range(self.n_hidden_layers)]
@@ -386,10 +433,12 @@ class DNN_shrink_pt:
 
         optimizer = optim.Adam(self.model.parameters(), lr=self.learning_rate)
 
+        torch.manual_seed(self.random_state)
+
         # Create the custom datasets
         train_dataset = self.data_loader(train_x, train_y)
 
-        train_loader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True, worker_init_fn=lambda _: torch.manual_seed(self.random_state))
+        train_loader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True)
 
         # Training loop
         for epoch in range(self.num_epochs):
@@ -421,6 +470,10 @@ class DNN_shrink_pt:
                 # Backward and optimize
                 optimizer.zero_grad()
                 loss.backward()
+
+                if self.grad_clip:
+                    nn.utils.clip_grad_norm_(self.model.parameters(), 1.0)
+
                 optimizer.step()
 
             # Print the progress
@@ -432,14 +485,45 @@ class DNN_shrink_pt:
 
     def predict(self, x):
 
+        # self.model.eval()
+
+        # x_tensor = torch.Tensor(x.values).to(self.device)
+
+
+        # with torch.no_grad():
+        #     predictions = self.model(x_tensor, training=False)
+
+        # predictions = predictions.cpu()
+
+        # return predictions
+    
         self.model.eval()
 
-        x_tensor = torch.Tensor(x.values).to(self.device)
+        predictions = []
 
+        predict_dataset = self.data_loader(x)
+
+        predict_loader = DataLoader(predict_dataset, batch_size=self.batch_size, shuffle=False)
 
         with torch.no_grad():
-            predictions = self.model(x_tensor, training=False)
 
-        predictions = predictions.cpu()
+            for batch_idx, batch_predict_x in enumerate(predict_loader):
+ 
+                batch_prediction = self.model(batch_predict_x, training=False).cpu()
+                batch_prediction_numpy = batch_prediction.numpy().flatten()
+                predictions.extend(batch_prediction_numpy)
 
         return predictions
+    
+
+
+    def save(self, address):
+        
+        torch.save(self.model.state_dict(), f'{address}.pt')
+    
+
+
+    def load(self, address):
+
+        self.model.load_state_dict(torch.load(f'{address}.pt'), map_location=self.device)
+
