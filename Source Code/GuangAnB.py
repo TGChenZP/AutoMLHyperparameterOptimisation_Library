@@ -935,6 +935,8 @@ class GuangAnB:
         # Display final information
         print("TUNING FINISHED\n")
 
+        self.view_best_combo_and_score()
+
 
 
 
