@@ -48,7 +48,6 @@ class JiaoCheng:
         self.checked = None
         self.result = None
         self.tuning_result_saving_address = None
-        self.object_saving_address = None
         self._up_to = 0
         self._tune_features = False
         self._seed = 19210216
@@ -618,7 +617,7 @@ class JiaoCheng:
             self.best_clf = clf
             self.best_combo = combo
             
-            if self.object_saving_address:
+            if self.best_model_saving_address:
                 self._save_best_model()
 
         # update internal governing DataFrames

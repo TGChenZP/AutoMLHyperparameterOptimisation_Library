@@ -54,7 +54,6 @@ class YangZhou:
         self.been_best = None
         self.been_cruised = None
         self.tuning_result_saving_address = None
-        self.object_saving_address = None
         self._parameter_value_map_index = None
         self._seed = 19260817
         self.best_score = -np.inf
@@ -1184,7 +1183,7 @@ class YangZhou:
             self.best_clf = clf
             self.best_combo = combo
 
-            if self.object_saving_address:
+            if self.best_model_saving_address:
                 self._save_best_model()
 
         # update internal governing DataFrames

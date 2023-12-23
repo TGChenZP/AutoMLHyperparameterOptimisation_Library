@@ -44,7 +44,6 @@ class GuangAnB:
         self.parameter_ranges = None
         self.hyperparameters = None
         self.tuning_result_saving_address = None
-        self.object_saving_address = None
         self._up_to = 0
         self._seed = 19040822
         self.best_score = -np.inf
@@ -1164,7 +1163,7 @@ class GuangAnB:
             self.best_clf = clf
             self.best_combo = combo
             
-            if self.object_saving_address:
+            if self.best_model_saving_address:
                 self._save_best_model()
 
             self._is_new_best = 1
