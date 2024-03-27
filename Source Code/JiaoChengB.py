@@ -346,47 +346,54 @@ class JiaoCheng:
             raise AttributeError("Missing tuning result csv saving address, please run .set_tuning_result_saving_address() first")
 
         self.key_stats_only = key_stats_only
-        
-        
-        starting_hp_combo = [self.param_value_reverse_map[hp][self.hyperparameter_default_values[hp]] for hp in self.hyperparameters] # setup starting combination
+
+        tmp_hyperparameter_tuning_order = copy.deepcopy(self.hyperparameter_tuning_order)
         print('\nDefault combo:', starting_hp_combo, '\n')
 
-        round = 1
-        continue_tuning = 1 # continuously loop through features until converge (combo stays same after a full round)
-        while continue_tuning:
-            print("\nROUND", round)
-
-            # first store previous round's best combo/the starting combo before each round; for comparison at the end
-            last_round_starting_hp_combo = copy.deepcopy(starting_hp_combo)
-
-            for hp in self.hyperparameter_tuning_order: # tune each hp in order
-                print("\nRound", round, '\nHyperparameter:', hp, f'(index: {self._tuning_order_map_hp[hp]})', '\n')
-
-                last_hyperparameter_best_hp_combo = copy.deepcopy(starting_hp_combo) # store last iteration's best combo
-
-                combo = list(copy.deepcopy(starting_hp_combo)) # tune the root combo
-                combo[self._tuning_order_map_hp[hp]] = 0
-
-                for i in range(self.n_items[self._tuning_order_map_hp[hp]]):
+        for starting_feature_index in range(len(self.hyperparameters)):
+            
+            if starting_feature_index != 1:
+                tmp_hyperparameter_tuning_order = [tmp_hyperparameter_tuning_order[1:]] + tmp_hyperparameter_tuning_order[0]
                 
-                    if not self.checked[tuple(combo)]:
-                        self._train_and_test_combo(combo)
+
+            starting_hp_combo = [self.param_value_reverse_map[hp][self.hyperparameter_default_values[hp]] for hp in self.hyperparameters] # setup starting combination
+
+            round = 1
+            continue_tuning = 1 # continuously loop through features until converge (combo stays same after a full round)
+            while continue_tuning:
+                print(f"\nFEATURE_INDEX: {starting_feature_index} ({self.hyperparameters[starting_feature_index]}) ROUND {round}")
+
+                # first store previous round's best combo/the starting combo before each round; for comparison at the end
+                last_round_starting_hp_combo = copy.deepcopy(starting_hp_combo)
+
+                for hp in self.tmp_hyperparameter_tuning_order: # tune each hp in order
+                    print("\nRound", round, '\nHyperparameter:', hp, f'(index: {self._tuning_order_map_hp[hp]})', '\n')
+
+                    last_hyperparameter_best_hp_combo = copy.deepcopy(starting_hp_combo) # store last iteration's best combo
+
+                    combo = list(copy.deepcopy(starting_hp_combo)) # tune the root combo
+                    combo[self._tuning_order_map_hp[hp]] = 0
+
+                    for i in range(self.n_items[self._tuning_order_map_hp[hp]]):
+                    
+                        if not self.checked[tuple(combo)]:
+                            self._train_and_test_combo(combo)
+                        else:
+                            self._check_already_trained_best_score(combo)
+                        
+                        combo[self._tuning_order_map_hp[hp]] += 1 
+                    
+                    starting_hp_combo = copy.deepcopy(self.best_combo) # take the best combo after this hyperparameter has been tuned
+                    
+                    if starting_hp_combo == last_hyperparameter_best_hp_combo:
+                        print('\nBest combo after this hyperparameter:', starting_hp_combo, ', NOT UPDATED SINCE LAST HYPERPARAMETER\n')
                     else:
-                        self._check_already_trained_best_score(combo)
-                      
-                    combo[self._tuning_order_map_hp[hp]] += 1 
+                        print('\nBest combo after this hyperparameter:', starting_hp_combo, ', UPDATED SINCE LAST HYPERPARAMETER\n')
                 
-                starting_hp_combo = copy.deepcopy(self.best_combo) # take the best combo after this hyperparameter has been tuned
+                round += 1
                 
-                if starting_hp_combo == last_hyperparameter_best_hp_combo:
-                    print('\nBest combo after this hyperparameter:', starting_hp_combo, ', NOT UPDATED SINCE LAST HYPERPARAMETER\n')
-                else:
-                    print('\nBest combo after this hyperparameter:', starting_hp_combo, ', UPDATED SINCE LAST HYPERPARAMETER\n')
-            
-            round += 1
-            
-            if starting_hp_combo == last_round_starting_hp_combo: # if after this full round best combo hasn't moved, then can terminate
-                continue_tuning = 0
+                if starting_hp_combo == last_round_starting_hp_combo: # if after this full round best combo hasn't moved, then can terminate
+                    continue_tuning = 0
         
 
         # Display final information

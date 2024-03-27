@@ -12,7 +12,7 @@ import random
 import pickle
 
 from sklearn.metrics import r2_score, mean_absolute_percentage_error, mean_squared_error
-from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, balanced_accuracy_score
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, balanced_accuracy_score, average_precision_score, roc_auc_score
 
 
 
@@ -521,7 +521,6 @@ class JiXi:
 
             if not self.checked[tuple(combo)]:
                 
-                self._up_to += 1
                 self._train_and_test_combo(combo)
             
             else:
@@ -569,7 +568,6 @@ class JiXi:
 
             if not self.checked[tuple(combo)]:
                 
-                self._up_to += 1
                 self._train_and_test_combo(combo)
             
             else:
@@ -644,7 +642,8 @@ class JiXi:
         elif self.clf_type == 'Classification':
 
             train_score = val_score = test_score = train_bal_accu = val_bal_accu = test_bal_accu = train_f1 = val_f1 = test_f1 = \
-                train_precision = val_precision = test_precision = train_recall = val_recall = test_recall = 0
+                train_precision = val_precision = test_precision = train_recall = val_recall = test_recall= \
+                train_ap = val_ap = test_ap = train_auc = val_auc = test_auc = 0
 
             try:    
                 train_score = accuracy_score(self.train_y, train_pred)
@@ -656,19 +655,6 @@ class JiXi:
                 pass
             try:
                 test_score = accuracy_score(self.test_y, test_pred)
-            except:
-                pass
-
-            try:
-                train_bal_accu = balanced_accuracy_score(self.train_y, train_pred)
-            except:
-                pass
-            try:
-                val_bal_accu = balanced_accuracy_score(self.val_y, val_pred)
-            except:
-                pass
-            try:
-                test_bal_accu = balanced_accuracy_score(self.test_y, test_pred)
             except:
                 pass
             
@@ -710,13 +696,51 @@ class JiXi:
                 test_recall = recall_score(self.test_y, test_pred, average='weighted')
             except:
                 pass
+            
+            if self.key_stats_only == False:
+                try:
+                    train_bal_accu = balanced_accuracy_score(self.train_y, train_pred)
+                except:
+                    pass
+                try:
+                    val_bal_accu = balanced_accuracy_score(self.val_y, val_pred)
+                except:
+                    pass
+                try:
+                    test_bal_accu = balanced_accuracy_score(self.test_y, test_pred)
+                except:
+                    pass
+
+                try:
+                    train_ap = average_precision_score(self.train_y, train_pred)
+                except:
+                    pass
+                try:
+                    val_ap = average_precision_score(self.val_y, val_pred)
+                except:
+                    pass
+                try:
+                    test_ap = average_precision_score(self.test_y, test_pred)
+                except:
+                    pass
+
+                try:
+                    train_auc = roc_auc_score(self.train_y, train_pred)
+                except:
+                    pass
+                try:
+                    val_auc = roc_auc_score(self.val_y, val_pred)
+                except:
+                    pass
+                try:
+                    test_auc = roc_auc_score(self.test_y, test_pred)
+                except:
+                    pass
+
 
             df_building_dict['Train accu'] = [np.round(train_score, 6)]
             df_building_dict['Val accu'] = [np.round(val_score, 6)]
             df_building_dict['Test accu'] = [np.round(test_score, 6)]
-            df_building_dict['Train balanced_accuracy'] = [np.round(train_bal_accu, 6)]
-            df_building_dict['Val balanced_accuracy'] = [np.round(val_bal_accu, 6)]
-            df_building_dict['Test balanced_accuracy'] = [np.round(test_bal_accu, 6)]
             df_building_dict['Train f1'] = [np.round(train_f1, 6)]
             df_building_dict['Val f1'] = [np.round(val_f1, 6)]
             df_building_dict['Test f1'] = [np.round(test_f1, 6)]
@@ -726,6 +750,17 @@ class JiXi:
             df_building_dict['Train recall'] = [np.round(train_recall, 6)]
             df_building_dict['Val recall'] = [np.round(val_recall, 6)]
             df_building_dict['Test recall'] = [np.round(test_recall, 6)]
+
+            if self.key_stats_only == False:
+                df_building_dict['Train balanced_accuracy'] = [np.round(train_bal_accu, 6)]
+                df_building_dict['Val balanced_accuracy'] = [np.round(val_bal_accu, 6)]
+                df_building_dict['Test balanced_accuracy'] = [np.round(test_bal_accu, 6)]
+                df_building_dict['Train AP'] = [np.round(train_ap, 6)]
+                df_building_dict['Val AP'] = [np.round(val_ap, 6)]
+                df_building_dict['Test AP'] = [np.round(test_ap, 6)]
+                df_building_dict['Train AUC'] = [np.round(train_auc, 6)]
+                df_building_dict['Val AUC'] = [np.round(val_auc, 6)]
+                df_building_dict['Test AUC'] = [np.round(test_auc, 6)]
 
         return df_building_dict, val_score, test_score
 
@@ -753,6 +788,8 @@ class JiXi:
             clf = self.model(**params)
 
             params['features'] = [list(self._feature_combo_n_index_map[combo[-1]])] 
+            params['n_columns'] = len(list(self._feature_combo_n_index_map[combo['features'][0]]))
+            params['n_features'] = combo['features'][0]
             params['feature combo ningxiang score'] = self.feature_n_ningxiang_score_dict[self._feature_combo_n_index_map[combo[-1]]]
 
         else:
@@ -769,10 +806,7 @@ class JiXi:
 
         # get time and fit
         start = time.time()
-        try:
-            clf.fit(tmp_train_x, self.train_y, val_x = tmp_val_x, val_y = self.val_y)
-        except TypeError:
-            clf.fit(tmp_train_x, self.train_y)
+        clf.fit(tmp_train_x, self.train_y)
         end = time.time()
 
         # get predicted labels/values for three datasets
@@ -790,6 +824,7 @@ class JiXi:
         df_building_dict, val_score, test_score = self._eval_combo(df_building_dict, train_pred, val_pred, test_pred)
 
         df_building_dict['Time'] = [np.round(time_used, 2)]
+        df_building_dict['Precedence'] = [self._up_to]
 
 
         tmp = pd.DataFrame(df_building_dict)
@@ -811,6 +846,8 @@ class JiXi:
         # update internal governing DataFrames
         self.checked[combo] = 1
         self.result[combo] = val_score
+
+        self._up_to += 1
 
         print(f'''Trained and Tested combination {self._up_to} of {self._total_combos}: {combo}, taking {np.round(time_used,2)} seconds to get val score of {np.round(val_score,4)}
         Current best combo: {self.best_combo} with val score {np.round(self.best_score, 4)}''')
@@ -890,7 +927,6 @@ class JiXi:
         for row in self.tuning_result.iterrows():
 
             try:
-                self._up_to += 1
         
                 combo = list()
                 for hyperparam in self.hyperparameters:
@@ -909,18 +945,21 @@ class JiXi:
 
                 combo = tuple(combo)
                 
-                self.checked[combo] = 1
                 
                 if self.clf_type == 'Regression':
                     self.result[combo] = row[1]['Val r2']
                 elif self.clf_type == 'Classification':
                     self.result[combo] = row[1]['Val accu']
+                
+                self._up_to += 1
+                
+                self.checked[combo] = 1
 
             except Exception as e:
                 print(f"Error message: {str(e)}")
                 print('Error Importing this Row:', row)
 
-        print(f"Successfully read in tuning result of {len(self.tuning_result)} rows")
+        print(f"Successfully read in tuning result of {len(self.tuning_result)} rows, for {sum(self.checked.reshape((np.prod(self.n_items))))} combos")
 
 
 
