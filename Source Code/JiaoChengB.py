@@ -11,7 +11,7 @@ from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_sc
 
 
 
-class JiaoCheng:
+class JiaoChengB:
 
 
 
@@ -342,15 +342,17 @@ class JiaoCheng:
         self.key_stats_only = key_stats_only
 
         tmp_hyperparameter_tuning_order = copy.deepcopy(self.hyperparameter_tuning_order)
-        print('\nDefault combo:', starting_hp_combo, '\n')
 
         for starting_feature_index in range(len(self.hyperparameters)):
             
             if starting_feature_index != 1:
-                tmp_hyperparameter_tuning_order = [tmp_hyperparameter_tuning_order[1:]] + tmp_hyperparameter_tuning_order[0]
+                tmp_hyperparameter_tuning_order = tmp_hyperparameter_tuning_order[1:] + tmp_hyperparameter_tuning_order[:1]
                 
 
             starting_hp_combo = [self.param_value_reverse_map[hp][self.hyperparameter_default_values[hp]] for hp in self.hyperparameters] # setup starting combination
+
+            if starting_hp_combo == 0:
+                print('\nDefault combo:', starting_hp_combo, '\n')
 
             round = 1
             continue_tuning = 1 # continuously loop through features until converge (combo stays same after a full round)
@@ -360,7 +362,7 @@ class JiaoCheng:
                 # first store previous round's best combo/the starting combo before each round; for comparison at the end
                 last_round_starting_hp_combo = copy.deepcopy(starting_hp_combo)
 
-                for hp in self.tmp_hyperparameter_tuning_order: # tune each hp in order
+                for hp in tmp_hyperparameter_tuning_order: # tune each hp in order
                     print("\nRound", round, '\nHyperparameter:', hp, f'(index: {self._tuning_order_map_hp[hp]})', '\n')
 
                     last_hyperparameter_best_hp_combo = copy.deepcopy(starting_hp_combo) # store last iteration's best combo
@@ -603,8 +605,8 @@ class JiaoCheng:
             clf = self.model(**params)
 
             params['features'] = [list(self._feature_combo_n_index_map[combo[-1]])]
-            params['n_columns'] = len(list(self._feature_combo_n_index_map[combo['features'][0]]))
-            params['n_features'] = combo['features'][0]
+            params['n_columns'] = len(list(self._feature_combo_n_index_map[combo[-1]]))
+            params['features_combo_index'] = combo[-1]
             params['feature combo ningxiang score'] = self.feature_n_ningxiang_score_dict[self._feature_combo_n_index_map[combo[-1]]]
 
         else:

@@ -596,8 +596,8 @@ class JiaoCheng:
             clf = self.model(**params)
 
             params['features'] = [list(self._feature_combo_n_index_map[combo[-1]])]
-            params['n_columns'] = len(list(self._feature_combo_n_index_map[combo['features'][0]]))
-            params['n_features'] = combo['features'][0]
+            params['n_columns'] = len(list(self._feature_combo_n_index_map[combo[-1]]))
+            params['features_combo_index'] = combo[-1]
             params['feature combo ningxiang score'] = self.feature_n_ningxiang_score_dict[self._feature_combo_n_index_map[combo[-1]]]
 
         else:
