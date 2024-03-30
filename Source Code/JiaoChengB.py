@@ -351,7 +351,7 @@ class JiaoChengB:
 
             starting_hp_combo = [self.param_value_reverse_map[hp][self.hyperparameter_default_values[hp]] for hp in self.hyperparameters] # setup starting combination
 
-            if starting_hp_combo == 0:
+            if starting_feature_index == 0:
                 print('\nDefault combo:', starting_hp_combo, '\n')
 
             round = 1
