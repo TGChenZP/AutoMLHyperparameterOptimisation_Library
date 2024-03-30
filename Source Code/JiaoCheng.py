@@ -560,9 +560,9 @@ class JiaoCheng:
             df_building_dict['Test recall'] = [np.round(test_recall, 6)]
 
             if self.key_stats_only == True:
-                df_building_dict['Train balanced_accuracy'] = [np.round(train_bal_accu, 6)]
-                df_building_dict['Val balanced_accuracy'] = [np.round(val_bal_accu, 6)]
-                df_building_dict['Test balanced_accuracy'] = [np.round(test_bal_accu, 6)]
+                df_building_dict['Train balanced_accu'] = [np.round(train_bal_accu, 6)]
+                df_building_dict['Val balanced_accu'] = [np.round(val_bal_accu, 6)]
+                df_building_dict['Test balanced_accu'] = [np.round(test_bal_accu, 6)]
                 df_building_dict['Train AP'] = [np.round(train_ap, 6)]
                 df_building_dict['Val AP'] = [np.round(val_ap, 6)]
                 df_building_dict['Test AP'] = [np.round(test_ap, 6)]
