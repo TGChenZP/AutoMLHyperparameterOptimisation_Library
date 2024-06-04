@@ -6,7 +6,7 @@ class LinearLayer(nn.Module):
         super().__init__()
         self.CFG = CFG
 
-        torch.manual_seed(self.CFG.random_state)
+        torch.manual_seed(self.CFG['random_state'])
 
         self.layer = nn.Sequential(
             nn.Linear(input_hidden_dim, output_hidden_dim),
@@ -27,7 +27,7 @@ class ResLayer(nn.Module):
         super().__init__()
         self.CFG = CFG
 
-        torch.manual_seed(self.CFG.random_state)
+        torch.manual_seed(self.CFG['random_state'])
 
         self.layer = nn.Sequential(
             nn.Linear(input_hidden_dim, input_hidden_dim),

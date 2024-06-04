@@ -1,5 +1,0 @@
-catboost==1.1.1
-lightgbm==3.3.2
-sklearn==1.1.2
-interpret==0.3.0
-numpy==1.17.0
