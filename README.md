@@ -1,4 +1,4 @@
-# JiaXing
+# AutoML Hyperparameter Optimisation Library
 `Author: Lang (Ron) Chen`
 
 `Date Produced: 2022-Present`
