@@ -51,6 +51,7 @@ class GuangAn:
         self._is_new_best = 0
         self.best_model_saving_address = None
         self._feature_combo_n_index_map = None
+        self.pytorch_model = False
 
         self.regression_extra_output_columns = ['Train r2', 'Val r2', 'Test r2', 
             'Train RMSE', 'Val RMSE', 'Test RMSE', 'Train MAPE', 'Val MAPE', 'Test MAPE', 'Time']
@@ -83,7 +84,7 @@ class GuangAn:
 
 
 
-    def read_in_model(self, model, type):
+    def read_in_model(self, model, type, pytorch_model = False):
         """ Reads in underlying model object for tuning, and also read in what type of model it is """
 
         assert type == 'Classification' or type == 'Regression' # check
@@ -91,6 +92,8 @@ class GuangAn:
         # record
         self.model = model
         self.clf_type = type 
+
+        self.pytorch_model = pytorch_model
 
         print(f'Successfully read in model {self.model}, which is a {self.clf_type} model')
 
@@ -1146,6 +1149,9 @@ class GuangAn:
             tmp_val_x = self.val_x[list(self._feature_combo_n_index_map[combo['features'][0]])]
             tmp_test_x = self.test_x[list(self._feature_combo_n_index_map[combo['features'][0]])]
 
+            if self.pytorch_model:
+                params['input_dim'] = len(list(self._feature_combo_n_index_map[combo[-1]]))
+
             # add non tuneable parameters
             for nthp in self.non_tuneable_parameter_choices:
                 params[nthp] = self.non_tuneable_parameter_choices[nthp]
@@ -1162,6 +1168,9 @@ class GuangAn:
             tmp_train_x = self.train_x
             tmp_val_x = self.val_x
             tmp_test_x = self.test_x
+
+            if self.pytorch_model:
+                params['input_dim'] = len(list(self.train_x.columns))
 
             # add non tuneable parameters
             for nthp in self.non_tuneable_parameter_choices:

@@ -63,6 +63,7 @@ class JiXi:
         self._tune_features = None
         self._feature_combo_n_index_map = None
         self.best_model_saving_address = None
+        self.pytorch_model = False
 
         self.regression_extra_output_columns = ['Train r2', 'Val r2', 'Test r2', 
             'Train RMSE', 'Val RMSE', 'Test RMSE', 'Train MAPE', 'Val MAPE', 'Test MAPE', 'Time']
@@ -95,7 +96,7 @@ class JiXi:
 
 
 
-    def read_in_model(self, model, type):
+    def read_in_model(self, model, type, pytorch_model = False):
         """ Reads in underlying model object for tuning, and also read in what type of model it is """
 
         assert type == 'Classification' or type == 'Regression' # check
@@ -103,6 +104,8 @@ class JiXi:
         # record
         self.model = model
         self.clf_type = type 
+
+        self.pytorch_model = pytorch_model
 
         print(f'Successfully read in model {self.model}, which is a {self.clf_type} model')
 
@@ -770,9 +773,12 @@ class JiXi:
         
         if self._tune_features == True:
             del params['features']
-            tmp_train_x = self.train_x[list(self._feature_combo_n_index_map[combo[-1]])] 
-            tmp_val_x = self.val_x[list(self._feature_combo_n_index_map[combo[-1]])]
-            tmp_test_x = self.test_x[list(self._feature_combo_n_index_map[combo[-1]])]
+            tmp_train_x = self.train_x[list(self._feature_combo_n_index_map[combo['features'][0]])] 
+            tmp_val_x = self.val_x[list(self._feature_combo_n_index_map[combo['features'][0]])]
+            tmp_test_x = self.test_x[list(self._feature_combo_n_index_map[combo['features'][0]])]
+
+            if self.pytorch_model:
+                params['input_dim'] = len(list(self._feature_combo_n_index_map[combo[-1]]))
 
             # add non tuneable parameters
             for nthp in self.non_tuneable_parameter_choices:
@@ -781,15 +787,18 @@ class JiXi:
             # initialise object
             clf = self.model(**params)
 
-            params['features'] = [list(self._feature_combo_n_index_map[combo[-1]])]
-            params['n_columns'] = len(list(self._feature_combo_n_index_map[combo[-1]]))
-            params['features_combo_index'] = combo[-1]
-            params['feature combo ningxiang score'] = self.feature_n_ningxiang_score_dict[self._feature_combo_n_index_map[combo[-1]]]
+            params['features'] = [list(self._feature_combo_n_index_map[combo['features'][0]])] 
+            params['n_columns'] = len(list(self._feature_combo_n_index_map[combo['features'][0]]))
+            params['n_features'] = combo['features'][0]
+            params['feature combo ningxiang score'] = self.feature_n_ningxiang_score_dict[self._feature_combo_n_index_map[combo['features'][0]]]
 
         else:
             tmp_train_x = self.train_x
             tmp_val_x = self.val_x
             tmp_test_x = self.test_x
+
+            if self.pytorch_model:
+                params['input_dim'] = len(list(self.train_x.columns))
 
             # add non tuneable parameters
             for nthp in self.non_tuneable_parameter_choices:
